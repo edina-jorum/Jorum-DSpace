@@ -1,0 +1,258 @@
+/*
+  IE Specific stylesheets
+
+  style-ie6.css
+
+  Version: $Revision: 3705 $
+ 
+  Date: $Date: 2009-04-11 19:02:24 +0200 (Sat, 11 Apr 2009) $
+ 
+  Copyright (c) 2002-2005, Hewlett-Packard Company and Massachusetts
+  Institute of Technology.  All rights reserved.
+ 
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met:
+ 
+  - Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+ 
+  - Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+ 
+  - Neither the name of the Hewlett-Packard Company nor the name of the
+  Massachusetts Institute of Technology nor the names of their
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+ 
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+  TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  DAMAGE.
+*/
+
+/* 
+  Image preview's don't work because i.e6 can't handle the auto margin command, 
+  the option to fix this is to float everything and I didn't want to do that. 
+
+ul.ds-artifact-list li div.artifact-preview {
+	display: none;
+}*/
+
+/* 
+   All tables appear to be too wide on ie6 and streach off the page for no 
+   reason. Setting it back down to 80% seems to prevent this. 
+ */
+table {
+	/* I donno why, but this is like 90% on ff2.0 and ie7 */
+	width: 80%;
+}
+
+
+
+/*
+	The pagination divisions break with ie6 the 
+ */
+div.pagination {
+	position: relative;
+	padding: 0px;
+	margin: 5px 5px 15px 5px;
+	height: 50px;
+}
+
+div.pagination * {
+	padding: 0px;
+}
+
+div.pagination-masked {
+	position: relative;
+	margin-bottom: 5px;
+}
+
+a.previous-page-link {
+	position: absolute;
+	left: 10px;
+	top: 25px;
+}
+
+p.pagination-info {
+	position: relative;
+	top: 10px;
+	text-align: center;
+	width: 350px;
+	margin-left: 125px;
+}
+
+ul.pagination-links {
+	position: relative;
+	text-align: center;
+	top: -7px;
+	width: 500px;
+}
+
+*.pagination-links li {
+	list-style: none;
+	display: inline;
+	margin-right: 5px;
+	font-weight: bolder;
+	font-size: 90%;
+}
+
+a.next-page-link {
+	position: absolute;
+	right: 50px;
+	top: 10px;
+}
+
+
+/*******************************/
+/*span.ds-form-label {
+    width: 140px;
+}
+
+div#ds-body {
+    width: 685px;
+    padding-right: 5px;
+    margin-right: 0px;
+}
+
+div.ds-option-set {
+    width: 210px;
+}
+
+h3.ds-option-set-head {
+    width: 200px;
+}
+
+ul.ds-artifact-list {
+    width: 99.3%;	
+}
+
+p.pagination-info {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+a.next-page-link {
+	position: absolute;
+	right: 15px;
+}
+
+ul.pagination-links {
+    top: -3px;
+	margin-left: 125px;
+}*/
+
+ul.ds-progress-list li {
+	line-height: 30px;
+	margin: 0 5px;
+}
+
+ul.ds-progress-list li.button {
+	line-height: 30px;
+	margin: 0px;
+	padding: 1px;
+}
+
+ul.ds-progress-list li.button.last {
+	background-color: white;
+	border: none;
+	padding: 2px;
+	margin-top: 2px;
+	margin-left: 0px;
+}
+
+ul.ds-progress-list li.button input.ds-button-field {
+	font-size: 67%;
+	color: black;
+}
+
+ul.ds-progress-list li.current input.ds-button-field {
+	color: rgb(40, 183, 40);
+}
+
+
+/* admin tabs */
+/*form.administrative{
+  border: 1px solid blue;
+  border-top: 0px;
+  width: inherit;
+}
+
+form.administrative fieldset{
+  margin: 7px;
+  width: auto;
+}
+form.administrative h3{
+  margin: 7px;
+}
+form.administrative table{
+  margin: 7px;
+  width: auto;
+}
+
+
+form#administrative_item_FindItemForm_div_find-item{
+  border: 0px;
+  margin-left: 0px;
+}
+
+ul.horizontal
+{
+font-weight: bold;
+list-style-type: none;
+padding: 0px;
+padding-left: 0px;
+padding-bottom: 29px;
+border-bottom: 1px solid rgb(240, 240, 210);
+border-left: 1px solid red;
+border-right: 1px solid red;
+margin: 0px;
+width: inherit;
+}
+
+ul.horizontal li
+{
+float: left;
+height: 21px;
+background-color: rgb(252, 252, 232);
+margin: 2px 2px 0px 2px;
+border: 1px solid rgb(240, 240, 210);
+}
+
+
+ul.horizontal a
+{
+float: left;
+display: block;
+text-decoration: none;
+padding: 4px;
+}
+
+ul.horizontal a:hover { background: white; text-decoration: underline;}
+
+ul.horizontal li span.bold a
+{
+border-bottom: 3px solid white;
+background-color: white;
+}
+
+ul.horizontal li span.bold a { color: black; }
+*/
+div#ds-user-box 
+{
+    width: 740px;
+	position: absolute;
+	top: 5px;
+	left: 190px;
+	text-align: right;
+}

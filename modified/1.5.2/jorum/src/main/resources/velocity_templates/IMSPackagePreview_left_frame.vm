@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:dri="http://di.tamu.edu/DRI/1.0/" xmlns:i18n="http://apache.org/cocoon/i18n/2.1">
+
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+	<meta content="DSpace" name="Generator" />
+	
+	<link type="image/x-icon" href="/xmlui/themes/Jorum_v2/images/favicon.ico" rel="icon" />
+	<link type="image/x-icon" href="/xmlui/themes/Jorum_v2/images/favicon.ico" rel="shortcut icon" />
+	<link type="text/css" rel="stylesheet" media="screen" href="/xmlui/themes/Jorum_v2/lib/jquery.treeview.css" />
+	<link type="text/css" rel="stylesheet" media="screen" href="/xmlui/themes/Jorum_v2/lib/prettyPhoto.css" />
+	<link type="text/css" rel="stylesheet" media="screen" href="/xmlui/themes/Jorum_v2/lib/style.css" />
+	<!--[if IE 6]>
+	<link type="text/css" rel="stylesheet" media="screen" href="/xmlui/themes/Jorum_v2/lib/style-ie6.css" />
+	<![endif]-->
+	<link type="application/rss+xml" rel="alternate" href="/xmlui/feed/rss_1.0/site" />
+	<link type="application/rss+xml" rel="alternate" href="/xmlui/feed/rss_2.0/site" />
+	
+	<title>Preview: $itemTitle</title>
+	
+	<style type="text/css">
+		#leftnav { overflow: auto;<!-- border-right: 1px solid gray; -->}
+		.media { margin-left: auto; margin-right: auto;}
+		#org_toggle { margin:1em; padding: 0.5em 0px 0.5em 2.5em;;background-color:#0386A2; border: 1px solid #00A8CC;color:white;}
+		#org_toggle:hover { background-color:#00A8CC; border: 1px solid #0386A2;color:white;}
+	</style>
+	
+</head>
+
+<body>
+	<div class="container_12" id="ds-main">
+		<div id="header">
+			<h1 class="grid_6">
+				<a href="http://www.jorum.ac.uk"><img id="getstarted" alt="Jorum: Learning to Share" src="/xmlui/themes/Jorum_v2/images/jorumMainLogo.jpg" /></a>
+				<img alt="Jorum: Learning to Share" src="/xmlui/themes/Jorum_v2/images/jorumLearntoShare.jpg" />
+			</h1>
+			<div id="main-search">
+				<form id="main-search-form" method="post" action="http://resources.jorum.ac.uk/xmlui/advanced-search" accept-charset="utf-8">
+					<div style="display:none;">
+						<input type="hidden" name="_method" value="POST" />
+						<input type="hidden" name="field2" value="licence" />
+					</div>
+					<div id="search-radios" class="input radio" style="margin: 0; padding: 0;">
+						<div style="float: left">
+							<input type="radio" name="query2" id="all-resources" value="" checked="checked" />
+							<label for="all-resources" style="display: block; color: #fff; font-size: 12px; font-weight: normal; margin-bottom: 0; margin-right: 10px;">All Resources</label>
+						</div>
+						<div style="float: left">
+							<input type="radio" name="query2" id="open-resources" value="creativecommons.org" style="float: left" />
+							<label for="open-resources" style="display: block; color: #fff; font-size: 12px; font-weight: normal; margin-bottom: 0;">Open Resources</label>
+						</div>
+					</div>
+					<div class="input text">
+						<label for="SearchQuery">Query</label>
+						<input class="input" name="query1" type="text" value="Search learning &amp; teaching resources" id="SearchQuery" />
+					</div>
+					<div class="submit">
+						<input type="submit" value="Search" />
+						<a href="http://resources.jorum.ac.uk/xmlui/advanced-search" id="advanced-search">Advanced Search</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<br class="clear" />
+		<ul id="mainmenu" class="grid_12">
+			<li style="padding-left:10px;" ><a href="http://www.jorum.ac.uk/">Home</a></li>
+			<li><a href="http://resources.jorum.ac.uk/xmlui" class="_active">Find</a></li>
+			<li><a href="http://www.jorum.ac.uk/share">Share</a></li>
+			<li><a href="http://community.jorum.ac.uk/">Discuss</a></li>
+			<li><a href="http://jorumnews.blogspot.com/">News</a></li>
+			<li><a href="http://www.jorum.ac.uk/help">Help</a></li>
+		</ul>
+		<div class="clear"></div>
+		<p class="grid_12" id="breadcrumb">
+			You are here: <a href="/xmlui" title="Resources Home">Resources Home</a> &#187; <a href="$handleUrl" title="$itemTitle">$itemTitle</a> &#187; Preview
+		</p>
+		<div class="grid_12" id="big_content">
+			<p id="org_toggle" class="grid_2">Hide Organization</p>
+			<br class="clear" />
+			<div id="leftnav" class="grid_3">
+				<ul id="tree" class="filetree">
+				$nodeVTL
+
+				#if( $urlBitstreams.size() > 0 )
+					<li>
+					<span class="folder">Web Resources</span>
+						<ul id="links">
+							#foreach( $bitstream in $urlBitstreams )
+	    						<li><a class="media" href="$bitstream.Name">$bitstream.Name</a></li>
+							#end
+						</ul>
+					</li>
+				#end
+				</ul>
+			</div>
+
+			<div id="ds-body" class="grid_9"></div>
+		</div>
+
+		<br class="clear" />
+		<div id="footer1" class="grid_12">
+			<ul id="footmenu" class="grid_6 alpha">
+				<li><a href="http://www.jorum.ac.uk/about-us">About us</a></li>
+				<li><a href="http://www.jorum.ac.uk/terms-of-service">Terms of Service</a></li>
+				<li><a href="http://www.jorum.ac.uk/Policies">Policies</a></li>
+				<li><a href="http://www.jorum.ac.uk/sitemap">Site Map</a></li>
+			</ul>
+			<div id="mailbox" >
+				<a href="http://www.jorum.ac.uk/feedback"><img src="/xmlui/themes/Jorum_v2/images/mailicon.gif" style="float:right;" alt="Email us your feedback" />Feedback</a>
+			</div>
+		</div>
+		
+		<br style="margin-bottom:10px;" class="clear" />
+		
+		<div id="jisc" class="grid_6">
+			<p><img alt="JISC logo" src="/xmlui/themes/Jorum_v2/images/jisc.gif" /></p>
+		</div>
+		
+		<div id="edina-mimas" class="grid_6">
+			<p><img alt="Joint Edina and Mimas data centres logo" src="/xmlui/themes/Jorum_v2/images/edina_mimas.gif" /></p>
+		</div>
+	</div>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/xmlui/themes/Jorum_v2/lib/jquery.treeview.js"></script>
+	<script type="text/javascript" src="/xmlui/themes/Jorum_v2/lib/jquery.media.js"></script>
+	<script type="text/javascript" src="/xmlui/themes/Jorum_v2/lib/swfobject.js"></script>
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		try 
+		{
+			var pageTracker = _gat._getTracker("UA-11915245-1");
+			pageTracker._trackPageview();
+		} 
+		catch(err) {}
+	</script>
+	<script type="text/javascript">
+	
+		function write_media_anchor(var_url, var_name)
+		{
+			$("#ds-body").empty();
+			$("#ds-body").append('<a class="media" href="' + var_url + '">' + var_name + '<\/a>');
+		
+			// Now convert the a tag into a div for the media elements plugin using jquery-media
+			$('a.media').media({
+				width: 700,
+				height: 525
+			});
+		}
+	
+		$(document).ready(function()
+		{
+			var holding_text = $("input#SearchQuery").val();
+			$("input#SearchQuery").focus(function() {
+				if($(this).val() == holding_text){
+					$(this).val('');
+				}
+			});
+			
+			$("#tree").treeview({
+				animated: "medium",
+				collapsed: false
+			});
+			
+			
+			$('a.navLink').click(function(){
+	
+				write_media_anchor(this.href, this.innerHTML);
+		
+				// have to return false to prevent event bubbling 
+				return false; 
+			});	
+			
+			#if( $firstBitstream )
+			write_media_anchor("$bitStreamHandleUrl/$firstBitstream.Name", "$firstBitstream.Name");
+			#end
+			
+			$("#org_toggle").toggle(
+				function () {
+					$('#leftnav').hide("slide", { direction: "left" }, 1000);
+					setTimeout ( "scaleUp()", 1000 );
+					$(this).html('Show Organisation');
+				},
+				function () {
+					$('#ds-body').removeClass("grid_12");    
+					$('#ds-body').addClass("grid_9");
+					$('.media').removeAttr("style");
+					$('.media').attr("style","background-color:white; width:700px;");
+					$('.autoHeight').removeAttr("width");
+					$('.autoHeight').attr("width","700px");
+					$('.autoHeight').removeAttr("height");
+					$('.autoHeight').attr("height","525px");
+					$('#leftnav').show("slide", { direction: "left" }, 1000);
+					$(this).html('Hide Organisation');
+				}
+			);
+		});
+		
+		function scaleUp()
+		{
+			$('#ds-body').removeClass("grid_9")
+			$('#ds-body').addClass("grid_12");
+			$('.media').removeAttr("style");
+			$('.media').attr("style","background-color:white; width:900px;");
+			$('.autoHeight').removeAttr("width");
+			$('.autoHeight').attr("width","900px");
+			$('.autoHeight').removeAttr("height");
+			$('.autoHeight').attr("height","675px");
+		}
+		
+	</script>
+</body>
+
+</html>

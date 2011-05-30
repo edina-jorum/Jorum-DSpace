@@ -1,0 +1,66 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+  <Set name="contextPath">/xmlui</Set>
+  <Set name="war">${dspace.dir}/webapps/xmlui</Set>
+  
+  
+  <!-- NOTE: If you wish to enable HTTP authentication and protect the webapp behind username/password,
+             please uncomment the block below and edit etc/jetty_realm.properties as appropriate -->
+  
+  <!-- 
+  
+  <Array id="roles_arr" type="java.lang.String">
+    	<Item>user</Item>
+    </Array>
+    
+    <New id="cons" class="org.mortbay.jetty.security.Constraint">
+            <Set name="name"><Get name="__BASIC_AUTH" class="org.mortbay.jetty.security.Constraint"/></Set>
+            <Set name="roles"><Ref id="roles_arr"></Ref></Set>
+            <Set name="authenticate">true</Set>
+      </New>
+      
+    <New id="no_auth_cons" class="org.mortbay.jetty.security.Constraint">
+            <Set name="name"><Get name="NONE" class="org.mortbay.jetty.security.Constraint"/></Set>
+            <Set name="authenticate">false</Set>
+      </New>  
+    
+    <Array id="cm_arr" type="org.mortbay.jetty.security.ConstraintMapping">
+    	<Item>
+    		<New id="cm1" class="org.mortbay.jetty.security.ConstraintMapping">
+  			<Set name="pathSpec">/ediauth-login-redirect</Set>
+  			<Set name="constraint"><Ref id="no_auth_cons"></Ref></Set>
+  			</New>
+  		</Item>
+  		<Item>
+    		<New id="cm2" class="org.mortbay.jetty.security.ConstraintMapping">
+  			<Set name="pathSpec">/ediauth-login</Set>
+  			<Set name="constraint"><Ref id="no_auth_cons"></Ref></Set>
+  			</New>
+  		</Item>
+    	<Item>
+    		<New id="cm3" class="org.mortbay.jetty.security.ConstraintMapping">
+  			<Set name="pathSpec">/*</Set>
+  			<Set name="constraint"><Ref id="cons"></Ref></Set>
+  			</New>
+  		</Item>
+    </Array>
+  
+  <Get id="secHandler" name="securityHandler">
+    <Set name="userRealm">
+      <New class="org.mortbay.jetty.security.HashUserRealm">
+            <Set name="name">Jorum</Set>
+            <Set name="config">${basedir}/etc/jetty_realm.properties</Set>
+      </New>
+    </Set>
+    
+    <Set name="constraintMappings">
+    	<Ref id="cm_arr"></Ref>
+    </Set>
+  </Get>
+  
+  -->
+  
+  
+</Configure>
+

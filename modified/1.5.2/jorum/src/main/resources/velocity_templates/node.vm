@@ -1,0 +1,13 @@
+<li>
+	#if( $node.hasChildren() )
+		<span class="folder">$node.getNodeName()</span>
+		<ul>
+			$nodeVTL
+		</ul>
+	#else
+		#set ( $bitstream = $node.getBitStream() )
+		#if ($bitstream)
+			<span class="file"><a class="navLink" href="$bitStreamHandleUrl/$bitstream.Name">$node.getNodeName()</a></span>
+		#end
+	#end
+</li>	

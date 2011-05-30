@@ -1,0 +1,1 @@
+../scripts/populate_jorum_institutions_table.groovy

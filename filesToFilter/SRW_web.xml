@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+         http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>Jorum SRW</display-name>
+
+  <servlet>
+    <servlet-name>SRWServlet</servlet-name>
+
+   <init-param>
+      <param-name>PropertiesFile</param-name>
+      <param-value>${dspace.dir}/SRW/SRWServer.props</param-value>
+   </init-param>
+
+
+
+    <servlet-class>
+      ORG.oclc.os.SRW.SRWServlet
+      </servlet-class>
+    </servlet>
+
+  <servlet-mapping>
+    <servlet-name>SRWServlet</servlet-name>
+    <url-pattern>/search/*</url-pattern>
+  </servlet-mapping>
+
+<!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list>
+	<welcome-file>
+            index.html
+        </welcome-file>
+    </welcome-file-list>
+
+
+
+
+</web-app>

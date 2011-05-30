@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html>
+<head>
+  <title>Statistics System Documentation: Functional Overview</title>
+  <link rel="StyleSheet" href="style.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+</head>
+
+<body>
+
+  <h1>Statistics System Documentation: Functional Overview</h1>
+
+  <p><a href="index.html">Back to contents</a></p>
+
+
+<h2><a name="architecture">Architecture</a></h2>
+  <p>  
+  The relevant usage events are collected from DSpace user web interfaces by plug-in mechanism 
+  and stored on a specific database schema.<br><br>
+  Other components apply procedures of spider detection, access origin detection and data aggregation for the data.
+  The resulting statistics are shown on a Web Interface.  
+The Web interface is flexible, allowing configuration according to a base structure of the information display in 
+ the user interface. The structure of the system is based upon the organization of information in two 
+dimensions: type of information (access, content, administrative) and aggregation level (repository, 
+community, collection, item).
+  <p>
+  The following diagram represents the main components of the system.
+  </p>
+ 
+<p class="figure"><img src="image/architecture.jpg"
+ alt="Statistics System Architecture" width="672"></p>
+<p class="caption">Statistics System Architecture</p>
+
+<p>The following sections describe the various functional aspects of the Statistics System.</p>
+  
+  
+  
+<h2><a name="eventscollector">Events Collector</a></h2>
+<p>
+The Events Collector is responsible for the gathering and storing the usage events on DSpace.  
+This mechanism does not depend on DSpace logging mechanism like it was in previous versions of the Stats add-on.
+It is based on the UsageEvent plug-in patch developed by Mark H. Wood.
+</p>
+<p>
+The stored events data will be used as the source for  the calculation of the statistics.  
+</p>
+<p><b>Implemented events on JSPUI web interface:</b><br>
+The events processed are: <code>view_item, view_bitstream, search, start_workflow, advance_workflow, and login.</code>
+</p>
+<p><b>Implemented events on XMLUI web interface:</b><br>
+The events processed at this moment are: <code>view_item and view_bitstream.</code>
+</p>
+<p>The information collected for each event is as follows:</p>
+<p>
+<table cellpadding="3" border="1">
+	<tr>
+		<td><b>Event</b></td>
+		<td><b>Information</b></td>
+	</tr>
+	<tr>
+		<td>view_item</td>
+		<td>
+		<u>date</u> - date of access<br>
+		<u>time</u> - time of access<br>
+		<u>item_id</u> - item accessed<br>
+		<u>session_id</u> - session identification<br>
+		<u>user_id</u> - user accessing<br>
+		<u>ip</u> - IP of the computer accessing<br>
+		<u>country code</u> - country code of the IP<br>
+		</td>
+	</tr>
+	<tr>
+		<td>view_bitstream</td>
+		<td>
+		<u>date</u> - date of access<br>
+		<u>time</u> - time of access<br>
+		<u>bitstream_id</u> - bitstream accessed<br>
+		<u>item_id</u> - item accessed<br>
+		<u>session_id</u> - session identification<br>
+		<u>user_id</u> - user accessing<br>
+		<u>ip</u> - IP of the computer accessing<br>
+		<u>country code</u> - country code of the IP<br>
+		<u>relative value</u> - <b>important: </b>the add-on implements a relative concept of downloads.<br> 
+		As downloads are presented in the context of items and each country may have more than one file<br>
+		the number of downloads for the items is dependent on the number of files it has. Each file download <br>
+		counts a proportion to 1 download (1 / number of files).
+		</td>
+	</tr>
+	<tr>
+		<td>search</td>
+		<td>
+		<u>date</u> - date of search<br>
+		<u>time</u> - time of search<br>
+		<u>scope</u> - context of the search (site, community or collection)<br>
+		<u>scope_id</u> - identifier of the community or collection in case of a context search<br>
+		<u>query</u> - search expression. Used to compute most used search words.<br>
+		<u>session_id</u> - session identification<br>
+		<u>user_id</u> - user accessing<br>
+		<u>ip</u> - IP of the computer accessing<br>
+		<u>country code</u> - country code of the IP<br>
+		</td>
+	</tr>
+	<tr>
+		<td>workflow</td>
+		<td>
+		<u>date</u> - date of workflow event<br>
+		<u>time</u> - time of workflow event<br>
+		<u>workflow_item_id</u> - identifier of workflow record<br>
+		<u>item_id</u> - identifier of the item<br>
+		<u>collection_id</u> - identifier of the collection<br>
+		<u>state</u> - code identifying what step on workflow<br> 
+		(Submission; Step 1; Step 2 or Step 3)<br>
+		<u>session_id</u> - session identification<br>
+		<u>user_id</u> - user accessing<br>
+		<u>ip</u> - IP of the computer accessing<br>
+		<u>country code</u> - country code of the IP<br>
+		</td>
+
+	</tr>
+	<tr>
+		<td>login</td>
+		<td>
+		<u>date</u> - date of access<br>
+		<u>time</u> - time of access<br>
+		<u>session_id</u> - session identification<br>
+		<u>user_id</u> - user accessing<br>
+		<u>ip</u> - IP of the computer accessing<br>
+		<u>country code</u> - country code of the IP<br>
+		</td>
+	</tr>
+</table>
+</p>
+  <h3>Country Detection</h3>
+  <p>While catching and storing events, the Event Collector is also responsible for the country detection of accesses.  This detection uses the free Maxmind GeoIP database.
+  </p>
+  <p>
+   The add-on includes a Maxmind GeoLite country database but we recommend that you make periodically upgrades. (available from the following link: 
+   <a href="http://www.maxmind.com/app/geoip_country)">http://www.maxmind.com/app/geoip_country</a>). 
+  
+  </p>
+
+<h2><a name="datamodel">Data Model</a></h2>
+<p>The Data Model is mainly constituted by tables that store the data, and views that resume the more complex data. 
+SQL queries used to retrieve the information from the database, combine the information from the data 
+model of the Stats and the data model of DSpace.  
+</p>
+
+<h2><a name="statsaggregator">Stats Aggregator</a></h2>
+<p>Some events table, for instance views, downloads and searches, could grow rapidly. 
+To improve Stats Web Interface performance and response time the raw events table are aggregated by month and stored in other tables.<br>
+<br>
+</p>
+The aggregations for each type of event are as follows:
+<p>
+<table cellpadding="3" border="1">
+	<tr>
+		<td><b>Event</b></td>
+		<td><b>Aggregations</b></td>
+	</tr>
+	<tr>
+		<td>view_item<br>and<br>view_bitstream</td>
+		<td>
+		By month <br>
+		By month and country<br>
+		By month and community<br>
+		By month and collection<br>
+		By month and item<br>
+		By month, community and country<br>
+		By month, collection and country<br>
+		By month, community and item<br>
+		By month, collection and item<br>
+		By month and metadata fields (configured on table stats.metadata_aggreg)<br>
+	    By month, metadata fields and community<br>
+	    By month, metadata fields and collection<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td>search</td>
+		<td>
+		By month <br>
+		By search words and month<br><br>
+		</td>
+	</tr>
+</table>
+
+</p>
+<p>
+At the same time this component performs one part of the mechanism of Spider treatment.
+This treatment consists on flagging the usage events that are made by (already) identified Spiders. 
+It checks the events against the spiders and agents registered on the system 
+since the last aggregation and reflects that information on the raw and aggregated events tables.
+Because of this, even at the raw event level, the web user interface only displays information that was
+previously processed by StatsAggregator.  
+</p>
+<p>
+This add-on version implements the concept of a <b>closed date</b>  (stats.control table) wich means you can tell the StatsAggregator  
+not to touch events prior to some date, allowing you to freeze the past statistics depending on your needs and preferences. 
+All the events after closed date are subject of Spider detection (automatic or by human intervention).
+We recommend that you keep the open period (period between closed date and the current day) not greater than one month or two.
+That means you have to make the human part of spider detection at least once per month. See the next section.  
+</p>
+<p>
+As said in the install instructions you should schedule this procedure to run periodically.
+We recommend to run it on a daily basis (at night). You can run it to aggregate only the unaggregated events
+or to clean the aggregations (or both). Due to the possible changes on the DSPace item metadata we recommend
+to run it once in a while in clean/aggregate mode. When you clean the aggregations, while the aggregating is made 
+even for the closed period, the spider treatment part is made only for the open period (after closed date).
+</p>
+<p>
+<h3>StatsAggregator command</h3>
+Available at <code>$DSPACE_BIN/bin/stats-aggregate</code><br>
+<pre>
+usage: StatsAggregator
+
+ -a,--aggregate   aggregate the unaggregated tables
+ -c,--clean       clean the current aggregation
+ -h,--help        help
+ -t,--tables      Run the clean and/or aggregation for the
+                  specified table(s).
+                  Possible values are:
+                  all, view, download, search
+                  Separate multiple with a comma (,)
+                  Default is all
+ -v,--verbose     print aggregation logging to STDOUT
+</pre> 
+</p>  
+<h2><a name="spiderdetector">Spider Detector</a></h2>
+<p>The detection of spiders uses the Web Server accesses as an information source. It could be based upon the conventional 
+behaviour of a well-behaved spider (before initiating the crawling it always makes an initial access to the file robots.txt). 
+So, when an access is made to this file, the IP and web agent of the machine that has undertaken the access could be registered and 
+considered as a potential spider in the future.
+</p>
+ <p>Nevertheless, due to the following situations:</p>
+ <ul>
+    <li>There are spiders not "well-behaved";</li>
+    <li>There might exist accesses to the  robots.txt by machines/proxies that are not crawlers;</li>
+    <li>The large crawlers with many machines access only once (and only with one machine) to the file robots.txt 
+    opening the way for the all the others to crawl</li>
+    <li>A wrong automatic decision could arm significantly your statistics, especially if it refers to a proxy at your
+    own institution, for example.</li>
+ </ul>
+ <p>We consider that it would be more effective to develop a two step mechanism, one automatic 
+ and another who needs human intervention, for instance executed by the system administrator manually.
+ </p>
+ 
+<h3>The automatic part</h3>
+<p>The first step is made periodically in the system with the execution of a procedure 
+(<code>/dspace/bin/stats-detect-spiders</code>) that will be responsible for processing the 
+web log file and detect machines that behave as spiders. 
+This procedure doesn't immediately consider the detected machines as spiders. 
+It stores them into a staging area (temporary tables) that can be analysed later by the system 
+administrator, who will have the final decision of considering them as spiders or not.
+</p>
+<p>
+<b>Important: </b>The SpiderDetector keeps a record (table stats.control) of the last line processed on the log, so you
+can call it by pointing to the current Apache weblog. You only have to have special attention when you roll
+your weblog. If you start a weblog from scratch make sure you set "last_line_log" of table stats.control to null. 
+</p>
+<p>
+For each IP/agent detected, StatsDetector gives it some kind of "suspicious level" based on the following concepts:  
+<ul>
+<li><p><b>The IP has an agent already flagged as agent</b><br>
+This IP's have an high probability of being spiders, because they have an agent already marked as spider.
+</p>
+</li>
+<li><p><b>Has an agent that looks like a spider</b><br>
+The system has a table of regular expressions (stats.temp) with several expressions that a spider agent could have. 
+The IPs agents are compared against this table. The IPs detected in this category still have an high
+probability of being spider, but decide with care.
+</p> 
+</li>
+<li><p><b>Accessed robots.txt</b><br>
+Could be a well-behaved spider accessing robots.txt, but at the same time, could be someone trying to access robots.txt from a 
+browser. See the agent name and decide using additional sources, for instance, spiders databases available on the Internet.
+</p> 
+</li>
+</ul> 
+</p>
+<h3>The user/administrator part</h3>
+<p>It is based on the user analysis of the staging area. The stats web interface has a area where 
+you can see the various listings of the staging area. This area lists the weblog analysis results and
+some additional listings related to sessions and IPs that were marked to be watched.
+</p>
+  <p>In this second step, after analysing each one of the temporary registries, the administrator 
+  has the possibility of registering machines in the system as spiders executing the 
+  <code>$DSPACE_BIN/stats-spider -a ip,agent</code>. 
+  Every access already stored for that machine after the closed date will be eliminated from the aggregations, and
+  marked as spider at raw event event tables. 
+  </p>
+  <p>
+  If you have not sure about an ip you can flag it to be watched in the future. The sessions analysis listings
+  are organized to show information to this "keep whatched" IPs. To flag an IP to watch int the future execute the 
+  <code>$DSPACE_BIN/stats-keepwatched -a ip,agent</code>. 
+  </p>
+  <p>
+  In the first weeks of the system production it's advisable to perform the manual procedure regularly (daily) 
+  because it's during this period that most of the crawlers will be detected. After this period the manual 
+  procedure can be done in longer periods (weekly or monthly)
+  </p>
+<p>
+<b>Note: </b>Based upon our experience on using the add-on for more than 3 years, we already have an long 
+list of spiders and agents. If you are interested in this list contact us. We can send you the listing.
+We think this way you can save lots of time. 
+</p>
+
+<h2><a name="webinterface">Web Interface</a></h2>
+<h3>Stats Processor</h3>
+<p>The Stats Processor is the component responsible for launching the SQL queries into the database, 
+individually for each statistic, returning the results and processing them to be displayed within the 
+Web Interface.
+</p>
+<p class="figure"><img src="image/statsprocessor.jpg"
+ alt="Stats Processor Architecture" width="634" height="436"></p>
+<p class="caption">Stats Processor Architecture</p>
+
+  </p>
+
+  <h3>Query Model</h3>
+  <p>The component that we call Query Model allows the following actions: the configuration of the 
+  various statistics, the SQL queries to submit to the data base and the way that they will be 
+  organized in the Web Interface.
+  </p>
+  <p>The model is composed by:
+  </p>
+  <ul>
+  <li>
+  <p><strong>stats-admins.xml</strong><br> 
+Definition of the user groups that will have access to each statistic independently of user access policies. 
+By default the system is configured to allow Anonymous group to access all the stats, but we recommend you change that. 
+  </p>
+  </li>
+  
+  <li><p><strong>stats.xml</strong><br>
+Definition of each statistic. Every statistic will correspond to an option in the lateral navigation of the Web Interface. 
+The statistics are organized into 2 dimensions: the type of statistic (access, content, administrative) and the level of 
+aggregation (global, community, collection, item). These 2 dimensions are also used to build the navigational component 
+of the interface.
+  </p>  
+<p>
+Each statistic is composed by 1 or more information blocks (Data tables, charts, static HTML, etc)
+</p>
+  </li>
+  <li><p><strong>stats-queries.xml</strong><br>
+Definition of SQL queries that will be executed for each Data table block defined in the 
+previous file. A certain query can be used in more that one statistic.  
+</p>
+</li>
+<li><p><strong>stats-charts.xml</strong><br>
+Definition of Charts that will be executed for each chart block defined in the 
+previous file. A certain chart can be used in more that one statistic.</p>  
+</li>
+<li><p><strong>xsl/*.xsl</strong><br>
+The result processor will transform the result set according to defined stylesheet schema .</li>
+</p>
+</li>
+  </ul>
+<p>
+<b>Note: </b> Like in other files in DSpace you can implement multilanguage interfaces, 
+by creating specific files (stats.xml, stats-queries.xml, stats-charts.xml) with a suffix 
+representing the language. Example stats_pt.xml.   
+</p>  
+<h3>Web interface</h3>
+<p>
+The Web interface will be built based upon the query model. When a statistic is selected the 
+Stats Processor will generate XML results for that particular query and  will be transformed 
+and presented accordingly.
+</p>
+<p class="figure"><img src="image/webinterface.png"
+ alt="Web Interface" width="697" height="491"></p>
+<p class="caption">Web Interface</p>
+<h3>User access policies</h3>
+<p>Besides the definition of the groups that will have access to each one of the statistics (statslist.xml), 
+data level policies can also be defined.These policies are based in the permissions schema of DSpace.
+</p>
+<p>
+For this purpose, a new permission in DSpace (VIEW_STATISTICS) was created and it can be attributed to 
+users groups, objects, communities and collections.
+</p>
+<p>
+So, for example, if we want a user group to have access to a certain statistic at the community level, 
+we firstly define the group within the AccessGroups and locate the required statistic within the file 
+statslist.xml and we attribute the permission VIEW_STATISTICS for that group in the community we want.
+</p>
+
+
+<p><a href="index.html">Back to contents</a></p>
+
+  <hr>
+
+    <ADDRESS>
+    <table border="0">
+    <tr>
+    <td valign="center">
+    <img alt="" src="image/RI_120.gif"><br><br>
+    </td>
+    <td width="20">
+    </td>
+    <td valign="top">
+    URL: <a href="https://repositorium.sdum.uminho.pt">https://repositorium.sdum.uminho.pt</a><br>
+    email: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a>
+    </td>
+    </tr>
+    </table>
+    Documentation Services of University of Minho<br>
+    </ADDRESS>
+
+</body>
+</html>

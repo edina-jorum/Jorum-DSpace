@@ -1,0 +1,36 @@
+body
+{
+	text-align: center;
+}
+
+#ds-main
+{
+	text-align: left;
+}
+
+a.previous-page-link 
+{
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+p.pagination-info 
+{
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+a.next-page-link 
+{
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+.ds-form-list
+{
+	width: 690px;
+	/*border: 1px solid red;*/
+}

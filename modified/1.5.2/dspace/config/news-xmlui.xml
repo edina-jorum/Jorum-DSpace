@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document xmlns="http://di.tamu.edu/DRI/1.0/" xmlns:i18n="http://apache.org/cocoon/i18n/2.1" version="1.1">
+<body>
+<div id="file.news.div.news" n="news" rend="primary">
+<head><i18n:text>file.news.title</i18n:text></head>
+<p>
+    <i18n:text>file.news.para1</i18n:text>
+    <list name="news_items" type="bulleted">
+    <item><i18n:text>file.news.point1</i18n:text></item>
+    <item><i18n:text>file.news.point2</i18n:text></item>
+    <item><xref target="/xmlui/feed/rss_2.0/site"><i18n:text>file.news.rss.text</i18n:text></xref></item>
+    </list>
+    
+</p>
+</div>
+</body>
+<options/>
+<meta>
+<userMeta/>
+<pageMeta/>
+<repositoryMeta/>
+</meta>
+</document>

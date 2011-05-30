@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Statistics System User Guide</TITLE>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" >
+</HEAD>
+  <BODY>
+  <H1>Statistics System User Guide</H1>
+  
+  <P><A HREF="index.html">Back to contents</A></P>
+
+  <P>This User Guide  describes some  aspects of the final usage of the Statistics System with some examples.</P>
+    <P>Please note that in this particular User Guide we use several examples implemented in <a href="https://repositorium.sdum.uminho.pt">Reposit&oacute;riUM</a>, consequently they may not apply to other DSpace environments.</P>
+    <P>&nbsp;</P>
+    <h3><strong><a name="Organized"></a>How are the statistics organized? </strong></h3>
+    <p>The Web interface is highly flexible, allowing configuration – according to a base structure – the information diplay in the user interface. The structure of the system is based upon the organization of information in two dimensions: <strong>type of information</strong> (Usage, Content, Administrative) and <strong>aggregation level</strong> (Repository, Community, Collection, Item).</p>
+    <p>Here is a short description of the aggregation levels contents: </p>
+    <blockquote>
+      <p><strong> Repository	</strong> - global usage, content and administrative statistics.</p>
+      <p><strong>Community </strong> - community usage, content and administrative statistics.</p>
+      <p><strong>Collection </strong> - collection usage, content and administrative statistics. </p>
+      <p><strong>Item </strong> - item usage and administrative statistics.</p>
+    </blockquote>
+    <p>Besides these four aggregation levels, the Add-on allows  to execute temporal data aggregations (month, year, global) to improve the response time of the most “heavy” statistics (for instance, downloads at Global/Repository level). Those aggregations are pre-processed in batch mode. </p>
+    <p><strong> Very Important Notes: </strong></p>
+    <p>In this statistics Add-on it's considered a download every time the  file associated to an item register is opened/saved (for registers with a single file). In the case of items  with more than one file associated, the  number of downloads is equal to the number of open/save events divided by the number of files associated. </p>
+    <p>A  item view is considered  every time someone accesses and visualizes the metadata of an item register.</p>
+    <p>&nbsp;</p>
+    <h3><strong><a name="webinterface"></a>Web interface</strong></h3>
+    <p>The following printscreen 
+
+
+ illustrates
+
+ an example of the Statistics System Web interface. On the left, the navigation menu with the existing four aggregation levels (Global, Community, Collection, Item) and the various statistics options by type of information (Usage, Content and Administrative). Please note, as it's configurable, the hierarchy of the different statistics can be different in other DSpace environments.</p>
+    <p>On the center/right side of the Web interface, the Statistics System definition model allows more than one page, implementing filtering fields (in a kind of tab separator, useful for similar statistics, that distinguish only by details like filter criteria, aggregation period, etc.).</p>
+    <p>On this center/right area, accordingly to the type of statistic you selected, you can see the information made available in form of tables (eg. Statistic/Query 1), charts (Statistic/Chart 1, 2, 3), etc. </p>
+    <p>This example is only the one of the stylesheets we have defined. Other stylesheets can be designed and completely change the layout. This a principle for  the entire system. </p>
+    <p align="left"><span class="figure"><img src="image/webinterface.png" alt="Web Interface" width="697" height="491"></span></p>
+  <p>&nbsp;</p>
+    <h3><strong><a name="Usage"></a>Using the Reposit&oacute;riUM statistics package</strong></h3>
+    <p>Each repository may define user access policies at the two organizational dimensions : information types and aggregation level. It will be possible to have all the statistics available for all the users  or to restrict the access to some or all the statistics. </p>
+    <p>In the case of repositories with access restrictions to some, or all the statistics, you will need to login in the system in order to be able to access all the statistics  available  to the communities/groups you belong and accordingly to your permission access level. </p>
+    <p>After logging in, the access to different levels of statistics in Reposit&oacute;riUM for example can be done by the following ways: </p>
+    <ul>
+      <li>Using the link  available in the top of the main area of your personal area – “My DSpace” – you can access to all the statistics you have permission to visualize. </li>
+    </ul>
+    <blockquote>
+      <p><img src="image/mydspace.jpg.png" alt="My DSpace" width="469" height="216"></p>
+  </blockquote>
+    <ul>
+      <li>Using the link  available in the footer of DSpace pages to see public accessible statistics. </li>
+    </ul>
+    <blockquote>
+      <p><img src="image/footer.png" alt="Footer" width="742" height="204"></p>
+  </blockquote>
+    <ul>
+      <li>Using the link  available in every item description area to see specific statistics of an item. </li>
+    </ul>
+    <blockquote>
+      <p><img src="image/itemregister.png" alt="Item register" width="996" height="523"></p>
+  </blockquote>
+    <ul>
+      <li> Using a direct link (http://yourdspaceurl/stats)
+
+ for instance in Reposit&oacute;riUM: <a href="https://repositorium.sdum.uminho.pt/stats">https://repositorium.sdum.uminho.pt/stats <br>
+    </a></li>
+  </ul>
+    <h3><strong><a name="Support"></a>Support </strong></h3>
+    <p>If you find any difficulty using the statistics package or if you want to share your feedback, your comments will be appreciated! Feel free to contact us using the e-mail: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a></p>
+    <p>For more information about the Statistics Add-on, please refer to the: <a href="index.html"> Statistics System Documentation</a></p>
+    
+    <P><A HREF="index.html">Back to contents</A></P>
+    
+    <HR>
+
+    <ADDRESS>
+    <table border="0">
+    <tr>
+    <td valign="center">
+    <img alt="RepositóriUM logo" src="image/RI_120.gif"><br><br>
+    </td>
+    <td width="20">
+    </td>
+    <td valign="top">
+    URL: <a href="https://repositorium.sdum.uminho.pt">https://repositorium.sdum.uminho.pt</a><br>
+    email: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a>
+    </td>
+    </tr>
+    </table>
+    Documentation Services of University of Minho
+    </ADDRESS>
+
+  </BODY>
+</HTML>

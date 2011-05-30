@@ -1,0 +1,18 @@
+All code was developed whilst working at EDINA (http://edina.ac.uk) based at the University of Edinburgh by:
+
+Gareth Waller 
+    - Email: code@garethwaller.com
+    - Twitter: @gwaller
+    - LinkedIn: http://www.linkedin.com/in/garethwaller
+
+Colin Gormley
+    - Email: colingor50+devel@gmail.com
+
+Ian Fieldhouse:
+    - Email: info@ianfieldhouse.com 
+    - Twitter: @ianfieldhouse
+    - LinkedIn: http://www.linkedin.com/in/ianfieldhouse
+
+Robin Taylor:
+    - Email: robin.taylor@ed.ac.uk 
+    

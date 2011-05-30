@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Stats System Documentation: Updating a Stats Installation</TITLE>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" >
+  </HEAD>
+  <BODY>
+    <H1>Stats System Documentation: Updating a Stats Installation</H1>
+
+    <P><A HREF="index.html">Back to contents</A></P>
+
+    <P>This section describes how to update a Stats installation from one version to the next.  Details of the differences between the functionality of each version are given in the <A HREF="history.html">Version History</A> section.</P>
+    
+    <h2><a name="20_21" id="20_21">Updating From 2.0 to 2.1</a></h2>
+    <p>Due to the changes on DSpace 1.5.1 build and deploy architecture the installation procedure for Stats 2.1 changed as well. We assume you
+    did not ported the Stats 2.0 code to the new structure of DSpace 1.5.1, so you do not need to uninstall Stats code. 
+    Depending on your config files policy you may need to change some configuration files. To upgrade to the new version you have to migrate the Stats database.</p>
+    <p>Follow the next instructions.</p>  
+	</p>
+	<p>
+	<b>Important:</b>&nbsp;You have to run the Stats migration script (step 1) before you run the migration script of DSpace schema.
+	If you do not do that the DSpace script will fail due to dependencies on some objects of Stats schema. 
+	</p>
+	<ol>
+	  <li>
+        <p>Apply the Stats 2.1 patch according to the <a href="install.html">installation instructions</a> Step 1 . Do not package and build at this moment.</P>
+      </li>
+	
+		<li> <p>Configuration files</p>
+		<p>
+		If you do not plan to update the configuration files with <code>ant init_configs</code>
+		then remove the JDBC appender configured on log4j.properties (on dspace/config binary directory).<br>
+		There is also changes on <code>dspace.cfg</code> and <code>/config/stats/*</code>. 
+		We assume you update this config files according to your deploy policy. You do not need to do it now. You can treat it on install procedure.
+		</p>
+		<p><b>Note: </b>The log4j JDBC Appender isn't needed anymore.</p> 
+		</li>
+		<li> <p>Migrating Stats Schema (Step 1)</p>
+		<p>The raw events table <code>stats.log</code> will be droped on the installation of Stats 2.1. 
+		If you need the information stored in this table you have to back it up at this moment.</p>
+		<p>On each of the following steps you will be running a different script.</p>
+		<p><b>Step 1</b><br>
+		<p>Run the the <code>database-schema-20-21-step1.sql</code> script located on <code>dspace-stats/etc</code> with your <code>dspace</code> database user<br>
+		We assume you have version 2.0 full functioning, in particular, the <code>pl/java</code> installed and the PostgreSQL function <code>stats.getcountry</code> running.
+		</p>  
+		<p><b>Step 2</b><br>
+		<p>Run the the <code>database-schema-20-21-step2.sql</code> script located on <code>dspace-stats/etc</code> with your privileged PostgreSQL user (generally <code>postgres</code>)<br>
+		</p>  
+		<p><b>Step 3</b><br>
+		<p>Run the the <code>database-schema-20-21-step3.sql</code> script located on <code>dspace-stats/etc</code> with your <code>dspace</code> database user.<br> 
+		</p>  
+		<p><b>Step 4</b><br>
+		<p>The new version has a different way of processing and aggregating search terms. <br>
+		If you want to reflect it on your past data run the the <code>database-schema-20-21-step4.sql</code> script located on <code>dspace-stats/etc</code> with your <code>dspace</code> database user.<br>
+		Depending on the size of your <code>stats.search</code> table this script may take a while running. 
+		</p>  
+		</li>
+ 	    <li>
+          <p>Complete the installation following the <a href="install.html">installation instructions</a>.</P>
+        </li>
+	</ol>    
+    
+    
+    <h2><a name="11_20" id="11_20">Updating From 1.1 to 2.0</a></h2>
+    <p>Stats 2.0 is a whole new application. If you are migrating from 1.1, you should follow the 
+	installation steps for 2.0 and then migrate the database tables data to the new schema.</p>
+    <ol>
+      <li>
+        <p>Follow the <a href="install.html">installation steps</a> taking in mind this notes:</P>
+		<p><b>Step 1</b><br>
+		If you have version 1.1 working then you already have PL/JAVA installed.</p>
+		<p><b>Step 3</b><br>
+		You already have the JDBC appender configured on log4j.properties, but you need to change the insert 
+		statement from <code>stats_log</code> to <code>stats.log</code>. Do it only on the next step - migrating data.</p>
+		<p><b>Step 4</b><br>
+		If you are migrating from 1.1 you dont need to do this step.</p>
+	  </li>
+      <li>
+        <p>Migrating database tables data</P>
+		<p> - Stop Tomcat<br>
+		    - Update log4j.properties changing the insert table name (from stats_log to stats.log)<br>  
+		    - Run database-data-11-20-step1.sql on dspace schema. (<code>psql -f database-data-11-20-step1.sql</code>)<br>
+			- Start Tomcat<br>
+			- Run database-data-11-20-step2.sql on dspace schema (<code>psql -f database-data-11-20-step2.sql</code>)<br>
+		</p>
+	  </li>
+      <li>
+        <p>Uninstall Stats v1.1</P>
+	  </li>
+	</ol>
+    <h2><a name="10_11">Updating From 1.0 to 1.1</a></h2>
+    <P>Upgrading Stats from version 1.0 to 1.1 do not require to rebuild and redeploy DSpace.    
+    <ol>
+      <li>
+        <p>Upgrade the database schema:</P>
+	<pre>
+    $ cd $ADDON_SRC/etc	    
+    $ psql -f etc/database_schema_10-11.sql [DSpace database name]
+	</pre>
+      </li>
+
+      <li>
+        <p>Copy the new 3:4 country flags:</p>
+	 <p>In order to avoid dspace rebuild copy the new $ADDON_SRC/jsp/image/flags to your 
+	 Tomcat dspace image directory and to your DSpace Source image directory. 
+	 If you want you could copy the flags only to DSpace Source image directory and rebuild and redeploy DSpace.</p>
+      </li>
+      <li>
+        <p>Institution settings</p>
+	 <p>Change the description of stats_country record coded ZZ to your institution name.</p>
+      <pre>
+     $ psql [DSpace database name]
+     => update stats_county set name = '[My Institution Name]' where code='ZZ'
+     </pre>	 
+	 <p>Change the zz.png icon (image flag directory) to your institution logo.</p>
+	 <p>Populate stats_institution_ip_range table with your institution ip range.</p>
+     <pre>
+     eg.
+     insert into stats_institution_ip_range values ('10.');
+
+     insert into stats_institution_ip_range values ('172.16.');
+     insert into stats_institution_ip_range values ('172.17.');
+     ...
+     insert into stats_institution_ip_range values ('193.136.8.');
+     insert into stats_institution_ip_range values ('193.136.9.');
+     ...
+     </pre>
+	 
+      </li>
+
+    </ol>
+
+
+
+<p><a href="index.html">Back to contents</a></p>
+
+    <HR>
+
+    <ADDRESS>
+    <table border="0">
+    <tr>
+    <td valign="center">
+    <img alt="" src="image/RI_120.gif"><br><br>
+    </td>
+    <td width="20">
+    </td>
+    <td valign="top">
+    URL: <a href="https://repositorium.sdum.uminho.pt">https://repositorium.sdum.uminho.pt</a><br>
+    email: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a>
+    </td>
+    </tr>
+    </table>
+    Documentation Services of University of Minho<br>
+    </ADDRESS>
+  </BODY>
+</HTML>

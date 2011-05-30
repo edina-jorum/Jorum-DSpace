@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Shell script to process access log for spider detection
+
+# Get the DSPACE/bin directory
+BINDIR=`dirname $0`
+
+$BINDIR/dsrun org.dspace.app.stats.SpiderDetector -p /usr/local/apache/httpd-2.0.55/logs/access_log
+

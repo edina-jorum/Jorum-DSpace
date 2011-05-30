@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head>
+  <title>Statistics System Documentation: Version History</title>
+  <link rel="StyleSheet" href="style.css" type="text/css">
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<h1>Statistics System Documentation: Version History</h1>
+<p><a href="index.html">Back to contents</a></p>
+
+<h2><a name="version2_1_2" id="version2_1_2">Changes in Stats 2.1.2</a></h3>
+<h3>Bug fixes</h3>
+<ul>
+<li>Patch file converted to DSpace 1.5.2 release</li>
+</ul>
+
+<h2><a name="version2_1_1" id="version2_1_1">Changes in Stats 2.1.1</a></h3>
+<h3>Bug fixes</h3>
+<ul>
+<li>Corrected the class invoked in the script stats-aggregate</li>
+<li>Added the dependency dspace-stats-api in modules/xmlui/pom.xml</li>
+</ul>
+
+<h2><a name="version2_1" id="version2_1">Changes in Stats 2.1</a></h3>
+<ul>
+  <li>Adapted to DSpace 1.5.1 build and deploy architecture</li>
+  <li>Installation process based on SVN Patch mechanism</li>
+  <li>Improvement to the gathering mechanism of DSpace events
+    <ul>
+      <li>The add-on no longer depends on DSpace logging system</li>
+      <li>Eliminated the log4j JDBC appender mechanism</li>
+      <li>The events are processed and stored using a event firing mechanism on the user interface <br>
+      (based on Mark Wood UsageEvent plug-in)</li>
+    </ul>
+  </li>
+  <li>Improvement to the events aggregation mechanism
+    <ul>
+      <li>Passed from PostgreSQL environment (pg/plsql) to Java.</li>
+      <li>There is no need to install pl/java anymore.</li>
+      <li>All the additional pl/pgsql functions were ported to Java</li>
+       <li>There is no need to install pl/java anymore.</li>       
+    </ul>
+  </li>
+  <li>Improvement to the spider detection mechanism
+    <ul>
+      <li>Performance improvements of the procedure.</li>
+      <li>Weblog analysis improvment.</li>
+      <li>Sessions analysis.</li>
+      <li>Flagging of IPs to watch in the future</li>
+      <li>User interface to this information (integrated on statistics user interface)</li>        
+    </ul>
+  </li>
+  <li>New administrator commands (Java API)</li> 
+</ul>
+
+
+<h2><a name="version2_0" id="version2_0">Changes in Stats 2.0</a></h3>
+<ul>
+  <li>Improvement of the performance and response time
+      <UL>
+        <LI>Temporal data aggregations</LI>
+        <LI>Dimensional aggregations (e.g. Country, Document type, etc.)</LI>
+      </UL>
+  </li>
+  <li>Improvement of the presentation and navigation
+      <UL>
+        <LI>Customizable menu navigation Structure (100% XML)</LI>
+        <LI>Customizable statistics layout (100% XSL stylesheets)</LI>
+        <LI>Charts</LI>
+      </UL>
+  </li>
+  <li>New statistics</li>
+  <li> Multilanguage support</li>
+  <li>Better system documentation
+      <UL>
+        <LI>Renewed Installation Guide</LI>
+        <LI>New <a href="user_guide.html">User Guide</a></LI>
+      </UL>
+  </li>
+</ul>
+<h2><a name="version1_1">Changes in Stats 1.1</a></h3>
+
+<ul>
+   <li>Detection, processing and distinction of own institution access</li>
+   <li>New 3:4 country flags</li>
+   <li>Dspace 1.4 compatibility</li>
+</ul>
+
+
+<p><a href="index.html">Back to contents</a></p>
+
+    <HR>
+
+    <ADDRESS>
+    <table border="0">
+    <tr>
+    <td valign="center">
+    <img alt="" src="image/RI_120.gif"><br><br>
+    </td>
+    <td width="20">
+    </td>
+    <td valign="top">
+    URL: <a href="https://repositorium.sdum.uminho.pt">https://repositorium.sdum.uminho.pt</a><br>
+    email: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a>
+    </td>
+    </tr>
+    </table>
+    Documentation Services of University of Minho<br>
+    </ADDRESS>
+</body>
+</html>

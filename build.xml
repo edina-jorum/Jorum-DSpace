@@ -1,0 +1,1069 @@
+<project name="JorumDSpace" default="build_dspace" basedir=".">
+
+<!--
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *
+ *  University Of Edinburgh (EDINA) 
+ *  Scotland
+ *
+ *
+ *  File Name           : build.xml
+ *  Author              : Gareth Waller
+ * 
+ *  Notes               : This is the Jorum build file which wraps the DSpace
+ *			  build. This build file patches the DSpace source tree 
+ *                        with the Jorum modifications, builds it and also 
+ *			  launches the webapps within Jetty.
+ *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ */
+-->
+
+
+<!-- ===================== Property Definitions =========================== -->
+<!--
+
+  Each of the following properties are used in the build script.
+  Values for these properties are set by the first place they are
+  defined, from the following list:
+
+  * Definitions on the "ant" command line (ant -Dfoo=bar compile).
+
+  * Definitions from a "build.properties" file in the top level
+    source directory of this application.
+
+  * Definitions from a "build.properties" file in the developer's
+    home directory.
+
+  * Default definitions in this build.xml file.
+
+  You will note below that property values can be composed based on the
+  contents of previously defined properties.  This is a powerful technique
+  that helps you minimize the number of changes required when your development
+  environment is modified.  Note that property composition is allowed within
+  "build.properties" files as well as in the "build.xml" script.
+
+-->
+
+	<property file="${PROPS}"/>
+
+	<property name="build.dir"    value="${basedir}/build"/>
+	<property name="patched.src.dir.name"    value="patched_src"/>
+	<property name="patched.src.dir"    value="${basedir}/${patched.src.dir.name}"/>
+	<property name="backup.dir"    value="${basedir}/backup"/>
+	
+	
+	<property name="dspace.version"    value="1.5.2"/>
+	<property name="dspace.prefix"    value="dspace-"/>
+	
+	<property name="diff.path"    value="/usr/bin/diff"/>
+	<property name="diff3.path"    value="/usr/bin/diff3"/>
+	<property name="xxdiff.path"    value="/usr/local/bin/xxdiff"/>
+	<property name="diff.args"    value="-aur -x '.*' --unidirectional-new-file"/>
+	
+	<property name="sed.path"    value="/usr/bin/sed"/>
+	<property name="sed.args"    value="-itmp '/^Only in ${dspace.prefix}${dspace.version}/d'"/>
+		
+	<property name="awk.path"    value="/usr/bin/awk"/>	
+		
+	<property name="ant.path" value="/usr/bin/ant"/>
+	
+	<property name="svn.path"    value="/usr/bin/svn"/>
+	<property name="svn.update.cmd"    value="update"/>
+	
+	<property name="mvn.path"    value="${mvn.path}"/>
+	<property name="mvn.clean.cmd"    value="clean"/>
+	<property name="mvn.package.cmd"    value="package"/>
+	<property name="mvn.integration.test.cmd" value="integration-test"/>
+	
+	<property name="dspace.golden.dir"    value="${basedir}/golden"/>
+	<property name="build.golden.dir"    value="${build.dir}/golden/"/>
+	<property name="expanded.dspace.golden.dir"    value="${build.golden.dir}/${dspace.prefix}${dspace.version}"/>
+	
+	<property name="golden.dspace.zip"    value="${dspace.golden.dir}/${dspace.prefix}${dspace.version}.tar.gz"/>
+	<property name="modified.dir.name"    value="modified"/>
+	<property name="modified.dir"    value="${basedir}/${modified.dir.name}/${dspace.version}"/>
+	<property name="diff.final.cmd"    value="${diff.args} ${dspace.prefix}${dspace.version} ${modified.dir.name}"/>
+	<property name="diff.patched.to.modified.cmd"    value="${diff.args} ${dspace.prefix}${dspace.version} ${patched.src.dir.name}"/>
+	<property name="diff.patched.to.modified.filelist.cmd"    value="${diff.args} -q ${dspace.prefix}${dspace.version} ${patched.src.dir.name}"/>
+	
+	<property name="patches.dir"    value="${build.dir}/patches"/>
+	<property name="patches.name"    value="diffs.patch"/>
+	<property name="local.patches.name"    value="local_diffs.patch"/>
+	<property name="patches.file"    value="${patches.dir}/${patches.name}"/>
+	<property name="local.patches.file"    value="${patches.dir}/${local.patches.name}"/>
+	<property name="diff.err.file"    value="${patches.dir}/diffs.stderr"/>
+	<property name="sed.err.file"    value="${patches.dir}/sed.stderr"/>
+	<property name="sed.final.cmd"    value="${sed.args} ${patches.name}"/>
+	<property name="curl.path" value="/opt/local/bin/curl"/>
+	
+	<property name="tofilter.dir" value="${basedir}/filesToFilter"/>
+	<property name="filtered.dir" value="${build.dir}/filtered"/>
+	<property name="filtered.for.copy.dir" value="${basedir}/filteredForCopy"/>
+	
+	<property name="copy.to.deploy.dir" value="${basedir}/copyToDeployDir"/>
+	
+	<property name="dspace.config" value="${filtered.dir}/dspace.cfg"/>
+	
+	<property name="dspace.ant.dir" value="${patched.src.dir}/dspace/target/${dspace.prefix}${dspace.version}-build.dir"/>
+	
+	<property name="jetty.config.name" value="jetty.xml"/>
+	<property name="jetty.stop.port" value="8081"/>
+	<property name="jetty.stop.key" value="jettystop"/>
+	<property name="jetty.logs.dir" value="${basedir}/logs"/>
+	<property name="jetty.config.name" value="jetty.xml"/>
+	
+	<!-- <property name="mvn.launch.jetty.cmd" value="exec:exec -Dexec.executable='java' -Dexec.args='-cp %classpath uk.ac.jorum.JettyWebAppLoader ${filtered.dir}/${jetty.config.name} ${jetty.stop.port} ${jetty.stop.key}'"/> -->
+	<property name="mvn.launch.jetty.cmd" value="exec:exec -Dexec.executable='java' -Dexec.args='-cp %classpath uk.ac.jorum.JettyWebAppLoader ${filtered.dir}/${jetty.config.name} ${jetty.stop.port} ${jetty.stop.key}'"/>
+	<property name="launch.jetty.script" value="${filtered.dir}/launch_jetty.sh"/>
+	<property name="check.jetty.script" value="${filtered.dir}/check_jetty_running.sh"/>
+	<property name="uk.ac.jorum.JettyWebAppLoader.out" value="${jetty.logs.dir}/uk.ac.jorum.JettyWebAppLoader.out"/>
+	
+	<property name="mvn.kill.jetty.cmd" value="exec:java -Dexec.mainClass='uk.ac.jorum.JettyKiller' -Dexec.args='${jetty.stop.port} ${jetty.stop.key}'"/>
+	<property name="jetty.contexts.dir" value="${filtered.dir}/webapp_contexts"/>
+	
+	<property name="copyModifiedScript" value="${filtered.dir}/copyRequiredFilesToPatch.sh"/>
+	<property name="mergeScript" value="${filtered.dir}/mergeModifiedToLocal.sh"/>
+	<property name="backupScript" value="${filtered.dir}/backupPatched.sh"/>
+	
+	<property name="dspace.mvn.package.inc.config.cmd" value="-Ddspace.config=${filtered.dir}/dspace.cfg ${mvn.package.cmd}"/>
+	
+	<property name="test.selenium.html.source.dump.dir" value="${basedir}/build/failed_test_html"/>
+	<property name="selenium.test.dir" value="${patched.src.dir}/jorum-selenium"/>
+	<property name="selenium.failed.file" value="${build.dir}/selenium_failed.tmp"/>
+	
+	<!-- START Settings for Cobertura - code coverage tool - this adds ant tasks -->
+	<property name="cobertura.data.dir" value="${build.dir}/cobertura"/>
+	<property name="cobertura.data.file" value="${cobertura.data.dir}/cobertura.ser"/>
+	<property name="cobertura.report.dir" value="${cobertura.data.dir}/report"/>
+	<property name="cobertura.report.html.dir" value="${cobertura.data.dir}/report/html"/>
+	<property name="cobertura.report.xml.dir" value="${cobertura.data.dir}/report/xml"/>
+	<property name="cobertura.dir" value="${basedir}/lib/cobertura-1.9.3" />
+	<path id="cobertura.classpath">
+	    <fileset dir="${cobertura.dir}">
+	        <include name="**/*.jar" />
+	    </fileset>
+	</path>
+	<property name="cobertura.classpath.str" value="${toString:cobertura.classpath}"/>
+	<!-- the cobertura tasks are defined in the tasks.properties file in the cobertura jar -->
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	
+	<path id="xmlui.jars.to.instrument">
+		<fileset dir="${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib">
+													<include name="**/dspace*.jar"/>
+													<include name="**/jorum*.jar"/>	      
+												</fileset>	
+	</path>
+	
+	<!-- END Settings for Cobertura - code coverage tool - this adds ant tasks -->
+	
+	<!-- Properties set according to if certain files/directories exist - can be used to 
+	     control if targets get called -->
+	<available file="${patched.src.dir}" type="dir" property="patched.src.dir.present"/>
+	
+	
+	
+	<!-- ************************* TARGETS ************************************* -->
+	
+	<target name="debug" unless="debug_called">
+		<property name="debug_called" value="true"/>
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Build Properties"/>
+		<echo message="*"/>
+		<echo message="* Property patched.src.dir.present = ${patched.src.dir.present}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+	</target>
+	
+	<target name="init" depends="debug" unless="init_called">
+		<property name="init_called" value="true"/>
+		<echo message="Creating directory (if it doesn't exist): ${build.dir}"/>
+		<mkdir dir="${build.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${build.golden.dir}"/>
+		<mkdir dir="${build.golden.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${patches.dir}"/>
+		<mkdir dir="${patches.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${patched.src.dir}"/>
+		<mkdir dir="${patched.src.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${jetty.logs.dir}"/>
+		<mkdir dir="${jetty.logs.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${backup.dir}"/>
+		<mkdir dir="${backup.dir}"/>
+		
+		<echo message="Creating directory (if it doesn't exist): ${test.selenium.html.source.dump.dir}"/>
+		<mkdir dir="${test.selenium.html.source.dump.dir}"/>
+		
+		
+	</target>
+	
+	<target name="clean_selenium" depends="debug" unless="clean_selenium_called">
+		<property name="clean_selenium_called" value="true"/>
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Cleaning Selenium tests"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.clean.cmd} in the directory ${selenium.test.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${selenium.test.dir}" executable="${mvn.path}">
+			    <arg line="${mvn.clean.cmd}"/>
+		</exec>
+	</target>
+	
+	<target name="clean_dspace" if="patched.src.dir.present" depends="debug" unless="clean_dspace_called">
+		<property name="clean_dspace_called" value="true"/>
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Cleaning DSpace build"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.clean.cmd} in the directory ${patched.src.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${patched.src.dir}" executable="${mvn.path}">
+    		<arg line="${mvn.clean.cmd}"/>
+  		</exec>
+	</target>
+	
+	<target name="clean" depends="debug, clean_dspace">
+		<echo message="Deleting directory: ${patches.dir}"/>
+		<delete dir="${patches.dir}"/>
+		
+		<echo message="Deleting directory: ${build.dir}"/>
+		<delete dir="${build.dir}"/>
+		
+		<antcall target="clean_selenium"/>
+	</target>
+
+
+	<target name="expand_dspace" depends="init" unless="expand_called">
+		<property name="expand_called" value="true"/>
+		<copy file="${golden.dspace.zip}" tofile="${build.dir}/dspace.tar.gz"/>
+		<gunzip src="${build.dir}/dspace.tar.gz" dest="${build.dir}"/>
+		<untar src="${build.dir}/dspace.tar" dest="${build.dir}"/>
+		<!-- Also untar it into the golden dir - the above dir will be patched at some point -->
+		<untar src="${build.dir}/dspace.tar" dest="${build.golden.dir}"/>
+	</target>
+	
+	<target name="exit_if_patch_diff_failed" if="patch.diff.failed">
+		
+		<echo message=""/>
+		<echo message="Diff failed whilst creating patch file"/>
+		<echo message=""/>
+		<echo message="Diff error output:"/>
+		<echo message=""/>
+		<concat >
+			<fileset file="${diff.err.file}"/>
+		</concat>
+	
+		<fail message="Diff failed whilst creating patch file"/>
+		
+	</target>
+	
+	<target name="exit_if_patch_sed_failed" if="patch.sed.failed">
+			
+			<echo message=""/>
+			<echo message="Failed whilst fixing patch file with sed"/>
+			<echo message=""/>
+			<echo message="Sed error output:"/>
+			<echo message=""/>
+			<concat >
+				<fileset file="${sed.err.file}"/>
+			</concat>
+		
+			<fail message="Failed whilst fixing patch file with sed"/>
+			
+		</target>
+
+	<target name="create_patch" depends="init, expand_dspace" unless="create_patch_called">
+		<property name="create_patch_called" value="true"/>
+		<echo message="Copying modified files to build dir"/>
+		<mkdir dir="${build.dir}/${modified.dir.name}"/>
+		<copy todir="${build.dir}/${modified.dir.name}" verbose="true">
+    		<fileset dir="${modified.dir}"/>
+  		</copy>
+		<echo message="Executing command: ${diff.path} ${diff.final.cmd}"/>
+		<exec dir="${build.dir}" executable="${diff.path}" 
+			  output="${patches.file}"
+			  error="${diff.err.file}"
+			  resultproperty="patch.diff.exit.code">
+    		<arg line="${diff.final.cmd}"/>
+  		</exec>
+  		
+		<condition property="patch.diff.failed">
+			<equals arg1="${patch.diff.exit.code}" arg2="2"/>
+		</condition>
+		
+		<!-- Check the return code and fail if it was an error -->
+		<antcall target="exit_if_patch_diff_failed"/>
+		
+  		<echo message="Fixing patch file - removing 'Only in' lines: ${sed.path} ${sed.final.cmd}"/>
+		<exec dir="${patches.dir}" executable="${sed.path}" resultproperty="patch.sed.exit.code"
+			  error="${sed.err.file}">
+    		<arg line="${sed.final.cmd}"/>
+  		</exec>
+		
+		<condition property="patch.sed.failed">
+			<not>
+				<equals arg1="${patch.sed.exit.code}" arg2="0"/>
+			</not>	
+		</condition>	
+		
+		<!-- Check the return code and fail if it was an error -->
+		<antcall target="exit_if_patch_sed_failed"/>
+				
+		
+  		<echo message="Patch file created at: ${patches.file}"/>  		
+  	</target>
+
+	<target name="apply_patch" depends="create_patch" unless="apply_patch_called">
+		<property name="apply_patch_called" value="true"/>
+		<echo message="Applying patches from ${patches.file} to DSpace source tree"/>
+		<patch dir="${build.dir}/${dspace.prefix}${dspace.version}" patchfile="${patches.file}" strip="1" />
+	</target>
+
+	<target name="copy_patched_src" depends="apply_patch">
+		<!-- Now copy the patched DSpace source to the patched.src.dir so developers can work on this code directly from an IDE -->
+		<copy todir="${patched.src.dir}">
+    		<fileset dir="${build.dir}/${dspace.prefix}${dspace.version}"/>
+  		</copy>
+  		<echo message="*****************************************************************"/>
+		<echo message="* PATCHED SOURCE CREATED"/>
+		<echo message="* ======================"/>
+		<echo message="*"/>
+		<echo message="* Jorum patched DSpace source tree copied to: ${patched.src.dir}"/>
+		<echo message="*"/>
+		<echo message="* !!!!!!!!! Make local modifications in: ${patched.src.dir} "/>
+		<echo message="* !!!!!!!!! Once changes are made, call 'ant local_changes' to move changes to ${modified.dir} "/>
+		<echo message="* !!!!!!!!! Code changes are committed from the ${modified.dir} directory"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+  		
+  		
+	</target>
+
+	<target name="copy_patched_src_if_necessary" unless="patched.src.dir.present" depends="debug">
+		<!-- If this target gets executed it means the patched.src.dir isn't present -->
+		<antcall target="copy_patched_src"/> <!-- create the patched src dir -->
+	</target>
+
+
+	<target name="svn_update_modified" if="do.svn.update">
+		<!-- User wants to perform svn update -->
+    	<echo message="Performing SVN update in directory ${modified.dir}..."/>
+    	
+    	<echo message="Executing command '${svn.path} ${svn.update.cmd}' in directory ${modified.dir}..."/>
+    	<exec dir="${modified.dir}" executable="${svn.path}">
+    		<arg line="${svn.update.cmd}"/>
+  		</exec>
+    	
+    	
+	</target>
+	
+	<target name="display_diffs_found_msg" if="diffs.found">
+		<!-- Diff command exit code was 1 i.e. diffs found -->
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="* LOCAL MODIFICATIONS FOUND"/>
+		<echo message="* ========================="/>
+		<echo message="*"/>
+		<echo message="* Diff output can be found at ${local.patches.file}"/>
+		<echo message="*"/>
+		<echo message="* Files with differences:"/>
+		<echo message="*"/>
+		<exec dir="${build.dir}" executable="${diff.path}">
+    		<arg line="${diff.patched.to.modified.filelist.cmd}"/>
+  		</exec>
+		<echo message="*****************************************************************"/>
+  		
+	</target>
+	
+	<target name="display_no_diffs_found_msg" unless="diffs.found">
+		<!-- Diff command exit code was 0 i.e. no diffs found -->
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="* NO LOCAL MODIFICATIONS FOUND"/>
+		<echo message="* =========================="/>
+		<echo message="*"/>
+    	<echo message="* No differences found - you have no local changes to move to ${modified.dir}"/>
+    	<echo message="*"/>
+    	<echo message="*****************************************************************"/>
+	</target>
+	
+
+	<target name="do_local_patch" if="apply.local.patch">
+		
+		<!-- Now run the copy modified script to ensure the modified dir contains atleast a golden copy of all files to be patched - the patch will fail if 
+  		     the dest file does not exist! This script will also output a message indicating if any files were modified and a list of them -->
+  		<chmod file="${copyModifiedScript}" perm="755"/> <!-- ensure script is executable -->
+  		<exec dir="${build.dir}" executable="${copyModifiedScript}">
+  			<arg line="copy"/>
+  		</exec>
+		
+		<echo message="Applying patches from ${local.patches.file} to ${modified.dir}"/>
+		<patch dir="${modified.dir}" patchfile="${local.patches.file}" strip="1" />
+		
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="* PATCH APPLIED"/>
+		<echo message="* ============="/>
+		<echo message="*"/>
+		<echo message="* Local patch file ${local.patches.file} has been applied. "/> 
+		<echo message="* Please check the changes in ${modified.dir} before committing"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+	</target>
+
+	<target name="apply_local_changes" if="diffs.found">
+		<!-- If we are in this target then local differences were found and can be applied to the modified dir -->
+		
+		<!-- Ask if the developer wants to apply the patch first - may want to do it manually -->
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="* NOTE"/>
+		<echo message="* ===="/>
+		<echo message="*"/>
+		<echo message="* Local patch file can be automatically applied if requested."/>
+		<echo message="* This may provide conflicts before committing if a svn update has not been performed in ${modified.dir}"/>
+		<echo message="*"/>
+		<echo message="* Details: "/>
+		<echo message="*"/>
+		<echo message="* Local patch file: ${local.patches.file}"/> 
+		<echo message="* Directory which patch will be applied to: ${modified.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<input message="Apply the local changes patch file to the directory ${modified.dir}? (y/n)?"
+    		   validargs="y,n"
+    		   addproperty="apply.local.patch.resp"/>
+    	<condition property="apply.local.patch">
+    		<equals arg1="${apply.local.patch.resp}" arg2="y"/>
+    	</condition>
+	
+		<!-- Now call the target to do the patching -->
+		<antcall target="do_local_patch"/>
+	
+	</target>
+
+
+	<target name="do_merge_from_svn" if="backup.worked">
+		<!-- Now run the merge script to attempt a merge -->
+  		<chmod file="${mergeScript}" perm="755"/> <!-- ensure script is executable -->
+  		<exec dir="${build.dir}" executable="${mergeScript}">
+  		</exec>
+	</target>
+
+
+	<target name="merge" depends="init, expand_dspace, filter_files">
+		<!-- In this target we want merge in the changes another developer may have made via svn
+			 into the patched src dir i.e. the current developers working directory
+		-->
+		
+		<!-- Backup the current patched dir before attempting any merge - that way the developer 
+		     won't loose any changes if the merge goes wrong! -->
+		<chmod file="${backupScript}" perm="755"/> <!-- ensure script is executable -->
+  		<exec dir="${build.dir}" executable="${backupScript}" resultproperty="backup.exit.code">
+  		</exec>
+  		<condition property="backup.worked">
+    		<equals arg1="${backup.exit.code}" arg2="0"/>
+    	</condition>
+  		
+  		<!-- Now call the target to do the merge (dependant on backup working) -->
+		<antcall target="do_merge_from_svn"/>
+		
+	</target>
+
+
+
+
+
+
+
+
+
+
+
+
+	<target name="local_changes" depends="init, copy_patched_src_if_necessary, filter_files">
+		<!-- In this target we want to examine the patched.src.dir for any changes which the 
+			 developer has directly made and aren't in the modified dir. We are therefore comparing
+			 the original patched DSpace source tree (which has the changes form the modified dir) to
+			 the patched.src.dir, create a patch file and then apply this to the modified dir.
+			 The developer can then commit the changes in the modified dir.
+		-->
+		
+		<!-- Need to make sure the local dir with modifications doesn't have any binary files ie do a mvn clean first! -->
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Clean build required before checking for local modifications"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.clean.cmd} in the directory ${patched.src.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${patched.src.dir}" executable="${mvn.path}" failonerror="true">
+    		<arg line="${mvn.clean.cmd}"/>
+  		</exec>
+		
+		<!-- Need to clean the sleenium tests too -->
+		<antcall target="clean_selenium"/>
+		
+		<!-- Ask if the developer wants to update the modified dir from svn first -->
+		<!--
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="*             INPUT REQUIRED"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<input message="Perform a 'svn update' in the modified directory prior to comparing diffs? (y/n)?"
+    		   validargs="y,n"
+    		   addproperty="svn.update.resp"/>
+    	<condition property="do.svn.update">
+    		<equals arg1="${svn.update.resp}" arg2="y"/>
+    	</condition>
+    	
+    	<antcall target="svn_update_modified"/>
+		-->
+		
+		<!-- Must now apply any changes in the modified dir to the golden source so we can get an accurate diff of local changes.
+		     Always do this as the developer my have issued a svn update manually outside of the build process.
+		 -->
+		<!-- set the property to reapply patches to the dspace golden source -->
+    	<property name="call.apply.patch" value="true"/>
+    	
+    	<echo message="Building patch file from ${modified.dir} source and applying it to the golden DSpace source ..."/>
+    	<antcall target="apply_patch"/>
+		
+		
+		<!-- Have to copy the potentially modified patched.src.dir back to the temp build dir.
+			 This may seem like overkill but for the patch to be ok, the 2 directories to compare must be 
+			 at the same level 
+		-->
+		<delete dir="${build.dir}/${patched.src.dir.name}"/> <!-- clean out an old one if it exists -->
+		<mkdir dir="${build.dir}/${patched.src.dir.name}"/>
+		<copy todir="${build.dir}/${patched.src.dir.name}">
+    		<fileset dir="${patched.src.dir}">
+                <!-- Exclude IntellijIDEA files -->
+                <exclude name="**/*.iml"/>
+                <exclude name="dspace/modules/xmlui/overlays/**"/>
+            </fileset>
+
+  		</copy>
+		
+		<echo message="Executing command: ${diff.path} ${diff.patched.to.modified.cmd}"/>
+		<exec dir="${build.dir}" executable="${diff.path}" 
+			  output="${local.patches.file}"
+			  error="${diff.err.file}"
+			  resultproperty="diff.exit.code">
+    		<arg line="${diff.patched.to.modified.cmd}"/>
+  		</exec>
+  		
+  		
+  		<!-- Check diff exit code -->
+  		<condition property="diffs.found">
+    		<equals arg1="${diff.exit.code}" arg2="1"/>
+    	</condition>
+    	<!-- call the tasks to display a message if there were diffs or not - this will execute if the property diffs.found is set as appropriate-->
+    	<!--<antcall target="display_diffs_found_msg"/>
+    	<antcall target="display_no_diffs_found_msg"/> -->
+    	<!-- Now run the copy modified script to just list the files modified -->
+  		<chmod file="${copyModifiedScript}" perm="755"/> <!-- ensure script is executable -->
+  		<exec dir="${build.dir}" executable="${copyModifiedScript}">
+  			<arg line="list"/>
+  		</exec>
+  		
+		<!-- Now patch the modified dir with the local changes if the developer wants to and also if there are any diffs to patch! -->
+		<antcall target="apply_local_changes"/>
+		
+	</target>
+	
+	
+	<target name="filter_files">
+		<!-- Clean out the old filtered files -->
+		<echo message="Deleting directory: ${filtered.dir}"/>
+		<delete dir="${filtered.dir}"/>
+		<!-- Create the filtered dir again -->
+		<echo message="Creating directory: ${filtered.dir}"/>
+		<mkdir dir="${filtered.dir}"/>
+		
+		<copy todir="${filtered.dir}">
+    		<filterchain>
+    			<expandproperties/>
+  			</filterchain>
+  			
+  			<fileset dir="${tofilter.dir}"/>
+  		</copy>
+	</target>
+	
+	<target name="copy_filtered_files_to_patched" unless="copy_filtered_called">
+		<property name="copy_filtered_called" value="true"/>
+			<echo message="Copying filtered files to correct path under ${patched.src.dir}"/>
+			<copy todir="${patched.src.dir}" flatten="false" verbose="true">
+	  			<fileset dir="${filtered.for.copy.dir}"/>
+	  		</copy>
+		</target>
+	
+	<target name="check_dspace_built" if="dspace.build.dir.present">
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="* DSpace build dir found"/>
+		<echo message="* =========================="/>
+		<echo message="*"/>
+    	<echo message="* A DSpace build dir was found at: ${dspace.ant.dir}"/>
+    	<echo message="*"/>
+    	<echo message="* NOTE: DSpace is already built - please call the target 'clean_dspace' first if a rebuild is necessary "/>
+    	<echo message="*"/>
+    	<echo message="*****************************************************************"/>
+    	
+    	
+	</target>
+	
+	<target name="do_build_dspace"  depends="debug, copy_filtered_files_to_patched">
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Building DSpace"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.package.cmd} in the directory ${patched.src.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${patched.src.dir}" executable="${mvn.path}" failonerror="true">
+    		<arg line="${dspace.mvn.package.inc.config.cmd}"/>
+  		</exec>
+	</target>
+	
+	<!-- Only execute a build on DSpace if the build dir doesn't already exist -->
+	<target name="build_dspace_if_necessary" unless="dspace.build.dir.present" depends="debug">
+		<!-- Ignore if DSpace is already built - rebuild it again -->
+		 <antcall target="do_build_dspace"/>
+	</target>
+	
+	<target name="build_dspace" depends="debug, copy_patched_src_if_necessary, filter_files">
+		
+		<!-- GWaller IssueID #569 16/12/10 Only set this property as part of the build step, not before any target is executed.  
+		                                   This allows clean and deploy to work in the same ant invocation -->
+		<available file="${dspace.ant.dir}" type="dir" property="dspace.build.dir.present"/>
+		
+		<!-- Call 2 ant targets - only one will execute as they are conditional on the same property.
+		     This will either print a message saying dspace build dir already exists i.e. it is already
+		     built OR it will go ahead and build dspace -->
+		 <antcall target="check_dspace_built"/>
+		 <antcall target="build_dspace_if_necessary"/>
+		
+		<antcall target="copy_filtered_files_to_patched"/>
+	</target>
+	
+	<target name="dspace_ant" depends="build_dspace, filter_files">
+		
+		
+		<!-- Could use ant element here but that would mean the dspace ant file inherits all the props which may be bad.
+		     If we turn inherit off then we can't specify the basedir! Best to use exec -->
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Calling DSpace Ant build file"/>
+		<echo message="* Executing command ${ant.path} -Dconfig=${dspace.config} -Dwars=true -Doverwrite=true ${T} in the directory ${dspace.ant.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${dspace.ant.dir}" executable="${ant.path}" failonerror="true">
+    		<arg line="-Dconfig=${dspace.config} -Dwars=true -Doverwrite=true ${T}"/>
+  		</exec>
+	</target>
+	
+	
+	<target name="deploy" depends="build_dspace">
+		<!-- Call the DSpace ant script with the update command -->
+		<!-- Could use ant element here but that would mean the dspace ant file inherits all the props which may be bad.
+				     If we turn inherit off then we can't specify the basedir! Best to use exec -->
+				<echo message=""/>
+				<echo message="*****************************************************************"/>
+				<echo message="*"/>
+				<echo message="* Calling DSpace Ant build file"/>
+				<echo message="* Executing command ${ant.path} -Dconfig=${dspace.config} -Doverwrite=true update in the directory ${dspace.ant.dir}"/>
+				<echo message="*"/>
+				<echo message="*****************************************************************"/>
+				<exec dir="${dspace.ant.dir}" executable="${ant.path}" failonerror="true">
+		    		<arg line="-Dconfig=${dspace.config} -Dwars=true -Doverwrite=true update"/>
+		  		</exec>
+	
+		<!-- Now call post deploy -->
+		<antcall target="postDeploy"/>
+		
+	</target>
+	
+	
+	<target name="copyToDeployDir">
+		<echo message="Copying files and directories under ${copy.to.deploy.dir} to ${dspace.dir}"/>
+		<copy todir="${dspace.dir}" flatten="false" verbose="true" overwrite="true">
+	  			<fileset dir="${copy.to.deploy.dir}"/>
+	  		</copy>
+	</target>
+	
+	<target name="postDeploy">
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Running Post Deploy Steps"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		
+		<antcall target="copyToDeployDir"/>
+		
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Post Deploy Steps Complete"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+				
+	</target>
+	
+	<target name="build_jetty_wrapper">
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Building Jetty wrapper"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.package.cmd} in the directory ${basedir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<exec dir="${basedir}" executable="${mvn.path}" failonerror="true">
+    		<arg line="${mvn.package.cmd}"/>
+  		</exec>
+	</target>
+	
+	<!-- JETTY Targets -->
+	<target name="exit_if_jetty_launch_failed" if="jetty.launch.failed">
+				
+				<echo message=""/>
+				<echo message="Failed whilst launching Jetty"/>
+				<echo message=""/>
+				<echo message="Launcher output:"/>
+				<echo message=""/>
+				<!--<concat >
+					<fileset file="${jetty.launch.output.file}"/>
+				</concat>
+				<echo message=""/> -->
+				<echo message="JettyWrapper output:"/>
+				<concat>
+					<fileset file="${uk.ac.jorum.JettyWebAppLoader.out}"/>
+				</concat>
+			
+				<fail message="Failed whilst launching jetty"/>
+				
+			</target>
+	
+	<target name="jetty" depends="init, filter_files, build_jetty_wrapper">
+    	<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Launching Jetty on URL http://${jetty.host}:${jetty.port}"/>
+		<echo message="* Executing command ${launch.jetty.script} in the directory ${basedir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		
+		<chmod file="${launch.jetty.script}" perm="755"/> <!-- ensure script is executable -->
+		<exec dir="${basedir}" 
+			  executable="${launch.jetty.script}" 
+			  spawn="true"> <!-- Must use spawn here so that the Ant script doesn't wait forever on server exiting! -->
+  		</exec>
+		
+		<echo message="Sleeping for 30 seconds to allow Jetty to start ... "/>
+		<sleep seconds="30"/>
+		
+		<chmod file="${check.jetty.script}" perm="755"/> <!-- ensure script is executable -->
+		<exec dir="${basedir}" 
+					  executable="${check.jetty.script}" 
+					  resultProperty="jetty.check.exit.code">
+		  		</exec>
+		
+		<condition property="jetty.launch.failed">
+					<not>
+						<equals arg1="${jetty.check.exit.code}" arg2="0"/>
+					</not>	
+				</condition>	
+				
+				<!-- Check the return code and fail if it was an error -->
+				<antcall target="exit_if_jetty_launch_failed"/>
+		
+    </target>
+	
+	<target name="kill_jetty" depends="build_jetty_wrapper">
+	    	<echo message=""/>
+			<echo message="*****************************************************************"/>
+			<echo message="*"/>
+			<echo message="* Killing Jetty via URL http://127.0.0.1:${jetty.stop.port}"/>
+			<echo message="* Executing command ${mvn.path} ${mvn.kill.jetty.cmd} in the directory ${basedir}"/>
+			<echo message="*"/>
+			<echo message="*****************************************************************"/>
+			<exec dir="${basedir}" executable="${mvn.path}">
+	    		<arg line="${mvn.kill.jetty.cmd}"/>
+	  		</exec>
+		
+			<echo message="Sleeping for 8 seconds to allow Jetty to die ... "/>
+				<sleep seconds="8"/>
+	    </target>
+	
+	<!-- Jetty recycle target which attempts to kill jetty first before launching -->
+	<target name="recycle_jetty" depends="kill_jetty, jetty">
+		<echo message="Jetty was recycled ...." />
+	</target>
+	
+	
+	
+	
+	<!-- *****************************************
+		 *
+		 * Code Coverage Targets 
+		 *
+		 ***************************************** -->	
+	
+	<target name="instrument_code">
+		<echo message="Creating directory (if it doesn't exist): ${cobertura.data.dir}"/>
+		<mkdir dir="${cobertura.data.dir}"/>
+		
+		<echo message="Deleting old Cobertura data file (if it doesn't exist): ${cobertura.data.file}"/>
+		<delete file="${cobertura.data.file}" />
+
+			<!-- Backup uninstrumented files -->
+			<echo message="Creating directory (if it doesn't exist): ${dspace.ant.dir}/webapps/xmlui/uninstrumented"/>
+			<mkdir dir="${dspace.ant.dir}/webapps/xmlui/uninstrumented"/>
+			<echo message="Backing up uninstrumented jars to: ${dspace.ant.dir}/webapps/xmlui/uninstrumented"/>
+			<copy todir="${dspace.ant.dir}/webapps/xmlui/uninstrumented" verbose="true">
+				<fileset dir="${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib">
+											<include name="**/dspace*.jar"/>
+											<include name="**/jorum*.jar"/>	      
+										</fileset>	
+			</copy>
+			
+			<!-- Don't specify toDir attribute - instrumented classes/jars will overwrite the uninstrumented ones -->
+			<echo message="Running cobertura and innstrumenting the following jars:"/>
+			<echo message="${toString:xmlui.jars.to.instrument}"/>
+			<cobertura-instrument datafile="${cobertura.data.file}">
+					<!-- Nested path elements not supported in this task!! Have to repeat above fileset -->
+				<fileset dir="${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib">
+							<include name="**/dspace*.jar"/>
+							<include name="**/jorum*.jar"/>	      
+						</fileset>	
+
+			</cobertura-instrument>
+		
+			<!-- Now copy the coberture libs so that the webapp loads! -->
+			<echo message="Copying cobertura libs to the webapp lib dir: ${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib"/>
+			<copy todir="${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib" verbose="true">
+				<path>
+					<path refid="cobertura.classpath"/>
+				</path>
+		  </copy>
+	</target>
+	
+	<target name="do_coverage_report">
+		<!-- Now kill jetty to write the cobertura data .. rem the data is only written when the JVM exits -->
+				<antcall target="kill_jetty"/>
+				
+				<echo message="Creating directory (if it doesn't exist): ${cobertura.report.dir}"/>
+				<mkdir dir="${cobertura.report.dir}"/>
+				
+				<echo message="Creating directory (if it doesn't exist): ${cobertura.report.html.dir}"/>
+				<mkdir dir="${cobertura.report.html.dir}"/>
+					
+				<echo message="Creating directory (if it doesn't exist): ${cobertura.report.xml.dir}"/>
+				<mkdir dir="${cobertura.report.xml.dir}"/>
+				
+				
+				<!-- Jar up all the sources and store in the cobertura dir so that cobertura can find them -->
+				<jar destfile="${cobertura.data.dir}/jorum-src.jar"
+				       basedir="${patched.src.dir}/jorum/src/main/java"
+				       includes="**/*.java"
+				  />
+				<unjar src="${cobertura.data.dir}/jorum-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/jorum-src.jar"/>
+				
+				<jar destfile="${cobertura.data.dir}/jorum-utils-src.jar"
+								       basedir="${patched.src.dir}/jorum-utils/src/main/java"
+								       includes="**/*.java"
+								  />
+				<unjar src="${cobertura.data.dir}/jorum-utils-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/jorum-utils-src.jar"/>
+		
+				<jar destfile="${cobertura.data.dir}/dspace-api-src.jar"
+						       basedir="${patched.src.dir}/dspace-api/src/main/java"
+						       includes="**/*.java"
+						  />
+				<unjar src="${cobertura.data.dir}/dspace-api-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/dspace-api-src.jar"/>
+					
+		
+				<jar destfile="${cobertura.data.dir}/dspace-xmlui-api-src.jar"
+								       basedir="${patched.src.dir}/dspace-xmlui/dspace-xmlui-api/src/main/java"
+								       includes="**/*.java"
+								  />
+				<unjar src="${cobertura.data.dir}/dspace-xmlui-api-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/dspace-xmlui-api-src.jar"/>
+		
+				<jar destfile="${cobertura.data.dir}/dspace-xmlui-wing-src.jar"
+										       basedir="${patched.src.dir}/dspace-xmlui/dspace-xmlui-wing/src/main/java"
+										       includes="**/*.java"
+										  />
+				<unjar src="${cobertura.data.dir}/dspace-xmlui-wing-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/dspace-xmlui-wing-src.jar"/>
+		
+				<jar destfile="${cobertura.data.dir}/dspace-stats-api-src.jar"
+												       basedir="${patched.src.dir}/dspace-stats/dspace-stats-api/src/main/java"
+												       includes="**/*.java"
+												  />
+				<unjar src="${cobertura.data.dir}/dspace-stats-api-src.jar" dest="${cobertura.data.dir}"/>
+				<delete file="${cobertura.data.dir}/dspace-stats-api-src.jar"/>
+				
+				<echo message="Sleeping for 5 seconds to allow coverage data to be written ... "/>
+				<sleep seconds="5"/>
+				
+				<!-- Gen HTML report -->
+				<cobertura-report format="html" destdir="${cobertura.report.html.dir}" 
+												datafile="${cobertura.data.file}"
+												srcDir="${cobertura.data.dir}"/>
+					
+				
+				<!-- Gen XML report -->
+				<cobertura-report format="xml" destdir="${cobertura.report.xml.dir}" 
+												datafile="${cobertura.data.file}"
+												srcDir="${cobertura.data.dir}"/>
+				
+					
+				<!-- Now copy back the uninstrumented classes and redeploy -->
+				<echo message="Restore uninstrumented files from: ${dspace.ant.dir}/webapps/xmlui/uninstrumented"/>
+				<copy todir="${dspace.ant.dir}/webapps/xmlui/WEB-INF/lib" verbose="true" overwrite="true">
+					<fileset dir="${dspace.ant.dir}/webapps/xmlui/uninstrumented">
+							<include name="**/dspace*.jar"/>
+							<include name="**/jorum*.jar"/>	      
+					</fileset>	
+				</copy>
+				
+				<!-- redeploy -->
+				<antcall target="deploy"/>
+				
+				<!-- start jetty again -->
+				<antcall target="jetty"/>
+				
+				
+								
+	</target>
+	
+	<!-- *****************************************
+		 *
+		 * Selenium Targets 
+		 *
+		 ***************************************** -->
+	<target name="create_selenium_failed_file_if_necessary" if="selenium.failed">
+		<touch file="${selenium.failed.file}"/>
+	</target>
+	
+	
+	<target name="do_selenium">
+		<!-- Remove the temp file indicating a selenium fail so we have a clean run and a prev fail doesn't matter !-->
+		<delete file="${selenium.failed.file}"/>
+		
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Executing Selenium tests against URL http://${http.auth.login}${dspace.host}:${dspace.port}/${dspace.default.webapp}"/>
+		<echo message="* Executing command ${mvn.path} ${mvn.integration.test.cmd} in the directory ${selenium.test.dir}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		<!-- Do not set failOnError to be true here - even if the tests fail we need to build to continue incase we are measuring code coverage -->
+		<exec dir="${selenium.test.dir}" executable="${mvn.path}" resultproperty="selenium.ret.code">
+			<arg line="${mvn.integration.test.cmd}"/>
+		</exec>
+			
+		<condition property="selenium.failed">
+			<not>
+				<equals arg1="${selenium.ret.code}" arg2="0"/>
+			</not>
+		</condition>
+		
+		<!-- NOTE: Must create a temp file to indicate the test failed. This is necessary as ant property scope is only within this target
+		           or any targets called directly from this target. When we leave this target, selenium.failed won't be set!! So cannot check for it
+		           later and fail then if necessary. instead fail if the file selenium.failed.file exists.
+		-->
+		<antcall target="create_selenium_failed_file_if_necessary"/>
+	</target>
+	
+	
+	<target name="exit_if_selenium_failed" if="selenium.failed.file.present">		
+		<!-- Remove the temp file indicating a selenium fail -->
+		<delete file="selenium.failed.file"/>
+		<echo message=""/>
+		<echo message="Selenium tests failed"/>
+		<echo message=""/>	
+		<fail message="One or more Selenium tests failed"/>	
+	</target>
+	
+	
+	<target name="selenium_nodep">
+		<antcall target="do_selenium"/>	
+		<!-- Check the return code and fail if it was an error -->
+		<available file="${selenium.failed.file}" property="selenium.failed.file.present"/>
+		<antcall target="exit_if_selenium_failed"/>
+	</target>
+	
+	
+	<target name="selenium" depends="deploy, recycle_jetty">
+		<antcall target="selenium_nodep"/>
+	</target>
+	
+	
+	<target name="selenium_coverage" depends="build_dspace, instrument_code, deploy, recycle_jetty">
+		<antcall target="do_selenium"/>
+		<antcall target="do_coverage_report"/>
+		<!-- Check the return code and fail if it was an error -->
+		<available file="${selenium.failed.file}" property="selenium.failed.file.present"/>
+		<antcall target="exit_if_selenium_failed"/>	
+	</target>
+	
+	<!-- *****************************************
+		 *
+		 * Selenium Headless Targets (non-gui) 
+		 *
+		 ***************************************** -->
+	
+	<target name="selenium_headless_nodep">
+		<echo message=""/>
+		<echo message="*****************************************************************"/>
+		<echo message="*"/>
+		<echo message="* Running Selenium headless script: ${selenium.headless.run.script.path}"/>
+		<echo message="*"/>
+		<echo message="*****************************************************************"/>
+		
+		<chmod file="${selenium.headless.run.script.path}" perm="755"/> <!-- ensure script is executable -->
+		<exec dir="${basedir}" executable="${selenium.headless.run.script.path}" failonerror="true">
+		</exec>
+		
+		<!-- Check the return code and fail if it was an error -->
+		<available file="${selenium.failed.file}" property="selenium.failed.file.present"/>
+		<antcall target="exit_if_selenium_failed"/>
+		
+	</target>
+
+	
+	<target name="selenium_headless" depends="deploy, recycle_jetty">
+		<antcall target="selenium_headless_nodep"/>
+	</target>
+	
+
+	<target name="selenium_headless_coverage" depends="build_dspace, instrument_code, deploy, recycle_jetty">
+		<antcall target="selenium_headless_nodep"/>
+		<antcall target="do_coverage_report"/>
+		<!-- Check the return code and fail if it was an error -->
+		<available file="${selenium.failed.file}" property="selenium.failed.file.present"/>
+		<antcall target="exit_if_selenium_failed"/>
+	</target>
+
+	
+	
+</project>
+
+

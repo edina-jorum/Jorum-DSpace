@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Statistics System Documentation: Installation</TITLE>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" >
+  </HEAD>
+  <BODY>
+    <H1>Statistics System Documentation: Installation</H1>
+
+    <P><A HREF="index.html">Back to contents</A></P>
+
+
+    <H2><A NAME="prerequisites">Prerequisites</A></H2>
+    <p>
+    The list below describes the components and tools you'll need to run the Statistics add-on.
+    <p>
+    <ul>
+       <li>
+         <strong>Dspace 1.5.2 </strong> - This add-on was tested with DSpace version 1.5.2. We can't make any assumptions on whether it will work on future versions of DSpace. If you are running DSpace version 1.4.x you can use the previous version (2.0) of this plug-in also available in DSpace Wiki. </li>
+       <li><strong>PostgreSQL database</strong> - This version has reduced significantly the dependency on PostgreSQL, but there is also some minor issues where the addon depend on PostgreSQL. We plan to resolve completely this question on the next version in order to allow, for instance, Oracle.</li>
+       <li>
+       <strong>Apache combined log format</strong> - The statistics add-on doesn't assume the use 
+       of any particular Web Server, but for the SpiderDetector component the "Apache combined log format" must be used.
+       </li>
+		</ul>
+    
+    <H2><A NAME="installationsteps">Installation Steps</A></H2>
+    <h3>Before you begin</h3>
+    
+    <p>This guide does not provide info on how to install DSpace. The Add-on build and deploy is fully integrated on DSpace.  
+	For instructions on how to install DSpace, please refer to 
+    <a href="http://www.dspace.org/index.php/Architecture/technology/system-docs/index.html">DSpace documentation</a>
+    </p>
+    <p>This add-on is distributed as source-code therefore it must be appended to the DSpace sources 
+    (not to the deployed version). DSpace must be rebuilt and redeployed using the standard DSpace mechanism.
+    
+    </p>
+    <h3>Setting some environment variables to ease installation</h3>
+    
+    <p>During this guide we will use the variables <code>$DSPACE_SRC</code>, <code>$DSPACE_BIN</code>
+    to identify the locations of the following directories : DSpace sources and DSpace binaries (installation directory).
+    </p>
+    
+
+	    
+    <h3>Step 1: Installing the add-on Patch (and binaries)</h3>
+    <p> Install the add-on patch, available under <code>/patch</code> folder, using your development environment or prefered method of applying SVN patches. 
+	</p>
+	<p>The patch mechanism can't copy the binary files like images, so, copy all the contents of the folder <code>binaryfiles</code> under this package to $DSPACE_SRC root.
+	This binary files include images for stats webapp, the GeoIP database and images for stats documentation.
+	Copy the folders over the root of your dspace project or create the needed folder structure and copy only the files. Proceed as you wish.  
+	</p>
+    
+    <h3>Step 2: Installing statistics database schema</h3>
+	<p> The following scripts assume your DSpace user and database has the name <code>dspace</code>. 
+	If you use a diferent user and/or database name, change the scripts accordingly.
+	</p>
+	<p>
+    <pre>
+    $ psql -U dspace -d dspace -f $DSPACE_SRC/dspace-stats/etc/database-schema.sql    
+    </pre>
+    </p>
+    <h3>Step 3: Institution access settings</h3>
+	 <p>Change the <code>zz.png</code> icon (<code>$DSPACE_SRC/dspace-jspui/.../webapp/stats/img/flags</code>) to your institution logo. Use the same image size.</p>
+	 <p>Populate <code>stats.ip_institution</code> table with your institution ip range.</p>
+     <pre>
+     eg.
+     insert into stats.ip_institution values ('10.');
+
+     insert into stats.ip_institution values ('172.16.');
+     insert into stats.ip_institution values ('172.17.');
+     ...
+     insert into stats.ip_institution values ('193.136.8.');
+     insert into stats.ip_institution values ('193.136.9.');
+     ...
+     </pre>
+     Set the next dspace.cfg parameter to your institution name
+     <pre>
+### Minho Stats add-on ###
+stats.country.institutionname = [My institution name]     
+     </pre>
+    
+    <h3>Step 4: Rebuild and deploy DSpace code</h3>
+    <p>
+    Install on your local maven repository the jar files included in this package under <code>/lib</code>. 
+    Replace [path to] with your path to where you unziped this packaged.
+<pre>
+mvn install:install-file -Dfile=[path to]/lib/jcommon-1.0.10.jar -DgroupId=jcommon -DartifactId=jcommon -Dversion=1.0.10 -Dpackaging=jar
+
+mvn install:install-file -Dfile=[path to]/lib/jfreechart-1.0.6.jar -DgroupId=jfreechart -DartifactId=jfreechart -Dversion=1.0.6 -Dpackaging=jar
+
+mvn install:install-file -Dfile=[path to]/lib/geoIp-1.2.0.jar -DgroupId=geoIp -DartifactId=geoIp -Dversion=1.2.0 -Dpackaging=jar
+</pre>
+    </p>
+
+    <p>Proceed according to DSpace Documentation to build and update your DSpace installation.</p>
+	<p> Depending on your <code>dspace/config</code> policy you may need to copy some files to <code>$DSPACE_BIN/config</code>.<br>
+	If you are not going to run <code>ant init_configs</code> you need to:</p>
+	<ul>
+		<li>Add the following lines to dspace.cfg
+			<p>
+     		<pre>
+### Usage event settings ###
+# The usage event handler to call.  The default is the "passive" handler, which ignores events.
+plugin.single.org.dspace.app.statistics.AbstractUsageEvent = \
+   org.dspace.app.stats.UsageEventJDBCLogger
+
+### Minho Stats add-on ###
+stats.enable = true
+stats.country.institutionname = [My institution name]     
+     		</pre>
+			</p>
+		</li>
+		<li>Copy the contents of <code>$DSPACE_SRC/dspace-stats/config/stats/</code> to <code>$DSPACE_BIN/config/stats/</code></li>
+	</ul>
+   <p>That’s it</p>
+   <p>Try the system on http://yourdspaceurl/stats</p>
+   
+   <H2><A NAME="postinstallation">Post-Installation</A></H2>
+   <p>According to your preferences configure dspace user crontab to:</p>
+   <ul>
+   <li>Aggregate the statistics. Example:
+   <pre>
+   0 3 * * * [pgsql bin]/psql -f [dspace]/bin/stats-aggregate -c -a
+   </pre> 
+   </li>
+   <li>Run the SpiderDetector. Example:
+   <pre>
+   0 1 * * * [pgsql bin]/psql -f [dspace]/bin/stats-detect-spiders -p [path to weblog file]
+   </pre> 
+   </li>
+   </ul>
+   <p>For more information about this procedures see <a href="functional.html">Functional Overview</a></p>
+   
+<p><a href="index.html">Back to contents</a></p>
+   <HR>
+
+    <ADDRESS>
+    <table border="0">
+    <tr>
+    <td valign="center">
+    <img alt="" src="image/RI_120.gif"><br><br>
+    </td>
+    <td width="20">
+    </td>
+    <td valign="top">
+    URL: <a href="https://repositorium.sdum.uminho.pt">https://repositorium.sdum.uminho.pt</a><br>
+    email: <a href="mailto:repositorium@sdum.uminho.pt">repositorium@sdum.uminho.pt</a>
+    </td>
+    </tr>
+    </table>
+    Documentation Services of University of Minho<br>
+    </ADDRESS>
+
+  </BODY>
+</HTML>

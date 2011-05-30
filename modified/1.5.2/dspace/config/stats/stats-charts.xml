@@ -1,0 +1,2083 @@
+<charts>
+	<!-- ************************************************************* -->
+	<!-- *********************** GLOBAL LEVEL ************************ -->
+	<!-- ************************************************************* -->
+
+	<!-- ********** ACCESS TYPE ********** -->
+	<chart name="access-downloads-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<query src="access-downloads-series-year"/>
+	</chart>
+	<chart name="access-downloads-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<query src="access-downloads-series-month"/>
+	</chart>
+	<chart name="access-downloads-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<query src="access-downloads-series-day"/>
+	</chart>
+	<chart name="access-downloads-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<query src="access-downloads-series-hour"/>
+	</chart>
+	<chart name="access-downloads-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.download_country_month
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-downloads-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.download_country_month
+						 where year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-downloads-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.v_download
+						 where date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-downloads-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.v_download
+						 where date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#0046C8"/>
+		<query src="access-views-series-year"/>
+	</chart>
+	<chart name="access-views-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#0046C8"/>
+		<query src="access-views-series-month"/>
+	</chart>
+	<chart name="access-views-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#0046C8"/>
+		<query src="access-views-series-day"/>
+	</chart>
+	<chart name="access-views-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#0046C8"/>
+		<query src="access-views-series-hour"/>
+	</chart>
+	<chart name="access-views-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views from stats.view_country_month
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views from stats.view_country_month
+						 where year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views from stats.v_view
+						 where date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views from stats.v_view
+						 where date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>	
+	<chart name="access-all-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="access-all-series-year"/>
+	</chart>
+	<chart name="access-all-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="access-all-series-month"/>
+	</chart>
+	<chart name="access-all-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="access-all-series-day"/>
+	</chart>
+	<chart name="access-all-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="access-all-series-hour"/>
+	</chart>
+	<chart name="access-search-series-year" type="bar">
+		<size width="250" height="200"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#EF5555"/>
+		<query src="access-search-series-year"/>
+	</chart>
+	<chart name="access-search-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#EF5555"/>
+		<query src="access-search-series-month"/>
+	</chart>
+	<chart name="access-search-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#EF5555"/>
+		<query src="access-search-series-day"/>
+	</chart>
+	<chart name="access-search-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#EF5555"/>
+		<query src="access-search-series-hour"/>
+	</chart>
+
+	<chart name="access-downloads-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.month, d.downloads
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(relative_value) as downloads
+				  from stats.download_month
+				  where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			order by d.month		
+		</query>
+	</chart>
+	<chart name="access-downloads-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.date, d.downloads
+			from (select date, sum(relative_value) as downloads
+				  from stats.v_download
+				  where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			order by d.date		
+		</query>
+	</chart>		
+	<chart name="access-downloads-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.download_country_month
+						 where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-downloads-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads from stats.v_download
+						 where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.month, c.views
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(value) as views
+				  from stats.view_month
+				  where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="access-views-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.date, c.views
+			from (select date, count(*) as views
+				  from stats.v_view
+				  where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+	<chart name="access-views-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views from stats.view_country_month
+						 where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-views-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views from stats.v_view
+						 where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="access-all-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.mes, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select to_date(yearmonth::varchar,'yyyymm') as mes, sum(relative_value) as downloads, 0 as views
+				  from stats.download_month
+				  where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth
+				  union all
+				  select to_date(yearmonth::varchar,'yyyymm') as mes, 0 as downloads, sum(value) as views
+				  from stats.view_month
+				  where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			group by d.mes
+			order by d.mes		
+		</query>
+	</chart>
+	<chart name="access-all-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.date, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select date, sum(relative_value) as downloads, 0 as views
+				  from stats.v_download
+				  where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date
+				  union all
+				  select date, 0 as downloads, count(*) as views
+				  from stats.v_view
+				  where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			group by d.date
+			order by d.date		
+		</query>
+	</chart>
+	<chart name="access-search-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select c.month, c.searches
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(value) as searches
+				  from stats.search_month
+				  where yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="access-search-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select c.date, c.searches
+			from (select date, count(*) as searches
+				  from stats.v_search
+				  where date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+	
+	<!-- ********** CONTENT TYPE ********** -->
+
+	<chart name="content-docs-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="content-docs-series-year"/>
+	</chart>			
+	<chart name="content-docs-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="content-docs-series-month"/>
+	</chart>
+	<chart name="content-docs-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="content-docs-series-day"/>
+	</chart>
+	<chart name="content-docs-type-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>horizontal</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	         select type,count(*) 
+	         from stats.v_item_type
+	         group by type
+	         order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="content-docs-access-global" type="bar">
+		<size width="400" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select access,count(*)
+	        from stats.v_item_access
+	        group by access
+	        order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="content-docs-pubyear-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select substr(date_issued,1,4),count(*)
+	        from stats.v_itemsbydate
+	        group by 1
+	        order by 1 desc;
+		</query>
+	</chart>			
+	<chart name="files-format-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+		       select f.format, f.number from
+                   (select short_description as format, count(*) as number
+                   from stats.v_files
+                   group by short_description) as f
+                order by f.number desc;
+		</query>
+	</chart>			
+	
+	<!-- ********** ADM TYPE ********** -->
+
+	<chart name="adm-workflow-tasks-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-workflow-tasks-series-year"/>
+	</chart>			
+	<chart name="adm-workflow-tasks-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-workflow-tasks-series-month"/>
+	</chart>			
+	<chart name="adm-workflow-tasks-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-workflow-tasks-series-day"/>
+	</chart>
+	<chart name="adm-workflow-tasks-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-workflow-tasks-series-hour"/>
+	</chart>
+	<chart name="adm-logins-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-logins-series-year"/>
+	</chart>			
+	<chart name="adm-logins-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-logins-series-month"/>
+	</chart>			
+	<chart name="adm-logins-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-logins-series-day"/>
+	</chart>
+	<chart name="adm-logins-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-logins-series-hour"/>
+	</chart>
+	<chart name="adm-requests-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-requests-series-year"/>
+	</chart>			
+	<chart name="adm-requests-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-requests-series-month"/>
+	</chart>			
+	<chart name="adm-requests-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="adm-requests-series-day"/>
+	</chart>
+	<chart name="pedidos-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#AE5818"/>
+		<query>
+			select d.request_date::date, d.pedidos
+			from (select request_date::date, count(*) as pedidos
+				  from requestitem
+				  where request_date::date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by request_date::date) as d
+			order by d.request_date		
+		</query>
+	</chart>		
+	
+	
+	<!-- ************************************************************* -->
+	<!-- ******************** COMMUNITY LEVEL ************************ -->
+	<!-- ************************************************************* -->		
+
+	<!-- ********** ACCESS TYPE ********** -->
+
+	<chart name="com-access-downloads-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<query src="com-access-downloads-series-year"/>
+	</chart>
+	<chart name="com-access-downloads-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<query src="com-access-downloads-series-month"/>
+	</chart>
+	<chart name="com-access-downloads-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<query src="com-access-downloads-series-day"/>
+	</chart>
+	<chart name="com-access-downloads-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<query src="com-access-downloads-series-hour"/>
+	</chart>
+	<chart name="com-access-downloads-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_comm_month
+						 where community_id = object-id
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-downloads-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_comm_month
+						 where community_id = object-id
+						 and year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-downloads-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_comm
+						 where community_id = object-id
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-downloads-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_comm
+						 where community_id = object-id
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#0046C8"/>
+		<query src="com-access-views-series-year"/>
+	</chart>
+	<chart name="com-access-views-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#0046C8"/>
+		<query src="com-access-views-series-month"/>
+	</chart>
+	<chart name="com-access-views-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#0046C8"/>
+		<query src="com-access-views-series-day"/>
+	</chart>
+	<chart name="com-access-views-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#0046C8"/>
+		<query src="com-access-views-series-hour"/>
+	</chart>
+	<chart name="com-access-views-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_comm_month
+						 where community_id = object-id
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_comm_month
+						 where community_id = object-id
+						 and year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_comm
+						 where community_id = object-id
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_comm
+						 where community_id = object-id
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>	
+	<chart name="com-access-all-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="com-access-all-series-year"/>
+	</chart>
+	<chart name="com-access-all-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="com-access-all-series-month"/>
+	</chart>
+	<chart name="com-access-all-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="com-access-all-series-day"/>
+	</chart>
+	<chart name="com-access-all-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="com-access-all-series-hour"/>
+	</chart>
+	<chart name="com-access-search-series-year" type="bar">
+		<size width="250" height="200"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#EF5555"/>
+		<query src="com-access-search-series-year"/>
+	</chart>
+	<chart name="com-access-search-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#EF5555"/>
+		<query src="com-access-search-series-month"/>
+	</chart>
+	<chart name="com-access-search-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#EF5555"/>
+		<query src="com-access-search-series-day"/>
+	</chart>
+	<chart name="com-access-search-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#EF5555"/>
+		<query src="com-access-search-series-hour"/>
+	</chart>
+
+	<chart name="com-access-downloads-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.month, d.downloads
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(relative_value) as downloads
+				  from stats.download_comm_month
+				  where community_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			order by d.month		
+		</query>
+	</chart>
+	<chart name="com-access-downloads-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.date, d.downloads
+			from (select date, sum(relative_value) as downloads
+				  from stats.v_download_comm
+				  where community_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			order by d.date		
+		</query>
+	</chart>		
+	<chart name="com-access-downloads-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_comm_month
+						 where community_id = object-id
+						 and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-downloads-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_comm
+						 where community_id = object-id
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.month, c.views
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(value) as views
+				  from stats.view_comm_month
+				  where community_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="com-access-views-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.date, c.views
+			from (select date, count(*) as views
+				  from stats.v_view_comm
+				  where community_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+	<chart name="com-access-views-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_comm_month
+						 where community_id = object-id
+						 and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-views-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_comm
+						 where community_id = object-id
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="com-access-all-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.mes, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select to_date(yearmonth::varchar,'yyyymm') as mes, sum(relative_value) as downloads, 0 as views
+				  from stats.download_comm_month
+				  where community_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth
+				  union all
+				  select to_date(yearmonth::varchar,'yyyymm') as mes, 0 as downloads, sum(value) as views
+				  from stats.view_comm_month
+				  where community_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			group by d.mes
+			order by d.mes		
+		</query>
+	</chart>
+	<chart name="com-access-all-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.date, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select date, sum(relative_value) as downloads, 0 as views
+				  from stats.v_download_comm
+				  where community_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date
+				  union all
+				  select date, 0 as downloads, count(*) as views
+				  from stats.v_view_comm
+				  where community_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			group by d.date
+			order by d.date		
+		</query>
+	</chart>
+	<chart name="com-access-search-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select to_date(c.month,'yyyy-mm'), c.searches
+			from (select substr(date::varchar,1,7) as month, count(*) as searches
+				  from stats.v_search
+				  where scope='community' and scope_id = 'object-id'
+				  and date 
+				     between to_date('01-mesinicio-anoinicio','DD-MM-YYYY')
+				     and (to_date('01-mesfim-anofim','dd-mm-yyyy') + interval '1 month')::date - 1
+				  group by month) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="com-access-search-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select c.date, c.searches
+			from (select date, count(*) as searches
+				  from stats.v_search
+				  where scope='community' and scope_id = 'object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+
+	<!-- ********** CONTENT TYPE ********** -->
+
+	<chart name="com-content-docs-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="com-content-docs-series-year"/>
+	</chart>			
+	<chart name="com-content-docs-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="com-content-docs-series-month"/>
+	</chart>
+	<chart name="com-content-docs-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="com-content-docs-series-day"/>
+	</chart>
+	<chart name="com-content-docs-type-global" type="bar">
+		<size width="450" height="300"/>
+		<orientation>horizontal</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	         select type,count(*) 
+	         from stats.v_item_type_comm
+	         where community_id = object-id
+	         group by type
+	         order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="com-content-docs-access-global" type="bar">
+		<size width="400" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select access,count(*)
+	        from stats.v_item_access_comm
+	        where community_id = object-id
+	        group by access
+	        order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="com-content-docs-pubyear-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select substr(i.date_issued,1,4),count(*)
+	        from stats.v_itemsbydate i, communities2item ci
+	        where i.item_id = ci.item_id
+	        and ci.community_id = 'object-id'
+	        group by 1
+	        order by 1 desc;
+		</query>
+	</chart>			
+	<chart name="com-files-format-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+		       select f.format, f.number from
+                   (select short_description as format, count(*) as number
+                   from stats.v_files_comm
+                   where community_id = object-id
+                   group by short_description) as f
+                order by f.number desc;
+		</query>
+	</chart>			
+	
+	<!-- ********** ADM TYPE ********** -->
+
+	<chart name="com-adm-workflow-tasks-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="com-adm-workflow-tasks-series-year"/>
+	</chart>			
+	<chart name="com-adm-workflow-tasks-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="com-adm-workflow-tasks-series-month"/>
+	</chart>			
+	<chart name="com-adm-workflow-tasks-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="com-adm-workflow-tasks-series-day"/>
+	</chart>
+	<chart name="com-adm-workflow-tasks-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>
+		<series index="0" color="#AE5818"/>
+		<query src="com-adm-workflow-tasks-series-hour"/>
+	</chart>
+
+	<!-- ************************************************************* -->
+	<!-- ******************** COLLECTION LEVEL *********************** -->
+	<!-- ************************************************************* -->		
+
+	<!-- ********** ACCESS TYPE ********** -->
+
+	<chart name="col-access-downloads-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<query src="col-access-downloads-series-year"/>
+	</chart>
+	<chart name="col-access-downloads-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<query src="col-access-downloads-series-month"/>
+	</chart>
+	<chart name="col-access-downloads-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<query src="col-access-downloads-series-day"/>
+	</chart>
+	<chart name="col-access-downloads-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<query src="col-access-downloads-series-hour"/>
+	</chart>
+	<chart name="col-access-downloads-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_coll_month
+						 where collection_id = object-id
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-downloads-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_coll_month
+						 where collection_id = object-id
+						 and year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-downloads-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_coll
+						 where collection_id = object-id
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-downloads-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_coll
+						 where collection_id = object-id
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#0046C8"/>
+		<query src="col-access-views-series-year"/>
+	</chart>
+	<chart name="col-access-views-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#0046C8"/>
+		<query src="col-access-views-series-month"/>
+	</chart>
+	<chart name="col-access-views-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#0046C8"/>
+		<query src="col-access-views-series-day"/>
+	</chart>
+	<chart name="col-access-views-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#0046C8"/>
+		<query src="col-access-views-series-hour"/>
+	</chart>
+	<chart name="col-access-views-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_coll_month
+						 where collection_id = object-id
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_coll_month
+						 where collection_id = object-id
+						 and year = pyear
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_coll
+						 where collection_id = object-id
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_coll
+						 where collection_id = object-id
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>	
+	<chart name="col-access-all-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="col-access-all-series-year"/>
+	</chart>
+	<chart name="col-access-all-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="col-access-all-series-month"/>
+	</chart>
+	<chart name="col-access-all-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="col-access-all-series-day"/>
+	</chart>
+	<chart name="col-access-all-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="col-access-all-series-hour"/>
+	</chart>
+	<chart name="col-access-search-series-year" type="bar">
+		<size width="250" height="200"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#EF5555"/>
+		<query src="col-access-search-series-year"/>
+	</chart>
+	<chart name="col-access-search-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#EF5555"/>
+		<query src="col-access-search-series-month"/>
+	</chart>
+	<chart name="col-access-search-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#EF5555"/>
+		<query src="col-access-search-series-day"/>
+	</chart>
+	<chart name="col-access-search-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#EF5555"/>
+		<query src="col-access-search-series-hour"/>
+	</chart>
+
+	<chart name="col-access-downloads-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.month, d.downloads
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(relative_value) as downloads
+				  from stats.download_coll_month
+				  where collection_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			order by d.month		
+		</query>
+	</chart>
+	<chart name="col-access-downloads-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.date, d.downloads
+			from (select date, sum(relative_value) as downloads
+				  from stats.v_download_coll
+				  where collection_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			order by d.date		
+		</query>
+	</chart>		
+	<chart name="col-access-downloads-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.download_country_coll_month
+						 where collection_id = object-id
+						 and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-downloads-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value) as downloads 
+						 from stats.v_download_coll
+						 where collection_id = object-id
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.month, c.views
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(value) as views
+				  from stats.view_coll_month
+				  where collection_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="col-access-views-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select c.date, c.views
+			from (select date, count(*) as views
+				  from stats.v_view_coll
+				  where collection_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+	<chart name="col-access-views-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,sum(value) as views 
+						 from stats.view_country_coll_month
+						 where collection_id = object-id
+						 and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-views-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view_coll
+						 where collection_id = object-id
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="col-access-all-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.mes, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select to_date(yearmonth::varchar,'yyyymm') as mes, sum(relative_value) as downloads, 0 as views
+				  from stats.download_coll_month
+				  where collection_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth
+				  union all
+				  select to_date(yearmonth::varchar,'yyyymm') as mes, 0 as downloads, sum(value) as views
+				  from stats.view_coll_month
+				  where collection_id = object-id
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			group by d.mes
+			order by d.mes		
+		</query>
+	</chart>
+	<chart name="col-access-all-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.date, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select date, sum(relative_value) as downloads, 0 as views
+				  from stats.v_download_coll
+				  where collection_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date
+				  union all
+				  select date, 0 as downloads, count(*) as views
+				  from stats.v_view_coll
+				  where collection_id = object-id
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			group by d.date
+			order by d.date		
+		</query>
+	</chart>
+	<chart name="col-access-search-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select to_date(c.month,'yyyy-mm'), c.searches
+			from (select substr(date::varchar,1,7) as month, count(*) as searches
+				  from stats.v_search
+				  where scope='collection' and scope_id = 'object-id'
+				  and date 
+				     between to_date('01-mesinicio-anoinicio','DD-MM-YYYY')
+				     and (to_date('01-mesfim-anofim','dd-mm-yyyy') + interval '1 month')::date - 1
+				  group by month) as c
+			order by c.month		
+		</query>
+	</chart>
+	<chart name="col-access-search-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#EF5555"/>
+		<query>
+			select c.date, c.searches
+			from (select date, count(*) as searches
+				  from stats.v_search
+				  where scope='collection' and scope_id = 'object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as c
+			order by c.date		
+		</query>
+	</chart>			
+
+	<!-- ********** CONTENT TYPE ********** -->
+
+	<chart name="col-content-docs-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="col-content-docs-series-year"/>
+	</chart>			
+	<chart name="col-content-docs-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="col-content-docs-series-month"/>
+	</chart>
+	<chart name="col-content-docs-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="col-content-docs-series-day"/>
+	</chart>
+	<chart name="col-content-docs-type-global" type="bar">
+		<size width="450" height="300"/>
+		<orientation>horizontal</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	         select type,count(*) 
+	         from stats.v_item_type_coll
+	         where collection_id = object-id
+	         group by type
+	         order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="col-content-docs-access-global" type="bar">
+		<size width="400" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select access,count(*)
+	        from stats.v_item_access_coll
+	        where collection_id = object-id
+	        group by access
+	        order by 2 desc;
+		</query>
+	</chart>			
+	<chart name="col-content-docs-pubyear-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+	        select substr(i.date_issued,1,4),count(*)
+	        from stats.v_itemsbydate i, collection2item ci
+	        where i.item_id = ci.item_id
+	        and ci.collection_id = 'object-id'
+	        group by 1
+	        order by 1 desc;
+		</query>
+	</chart>			
+	<chart name="col-files-format-global" type="bar">
+		<size width="450" height="400"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query>
+		       select f.format, f.number from
+                   (select short_description as format, count(*) as number
+                   from stats.v_files_coll
+                   where collection_id = object-id
+                   group by short_description) as f
+                order by f.number desc;
+		</query>
+	</chart>			
+	
+	<!-- ********** ADM TYPE ********** -->
+
+	<chart name="col-adm-workflow-tasks-series-year" type="bar">
+		<size width="300" height="300"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#AE5818"/>
+		<query src="col-adm-workflow-tasks-series-year"/>
+	</chart>			
+	<chart name="col-adm-workflow-tasks-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#AE5818"/>
+		<query src="col-adm-workflow-tasks-series-month"/>
+	</chart>			
+	<chart name="col-adm-workflow-tasks-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#AE5818"/>
+		<query src="col-adm-workflow-tasks-series-day"/>
+	</chart>
+	<chart name="col-adm-workflow-tasks-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>
+		<series index="0" color="#AE5818"/>
+		<query src="col-adm-workflow-tasks-series-hour"/>
+	</chart>
+
+	<!-- ************************************************************* -->
+	<!-- ************************ ITEM LEVEL ************************* -->
+	<!-- ************************************************************* -->
+
+	<!-- ********** ACCESS TYPE ********** -->
+	
+	<chart name="it-access-downloads-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<query src="it-access-downloads-series-year"/>
+	</chart>
+	<chart name="it-access-downloads-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<query src="it-access-downloads-series-month"/>
+	</chart>
+	<chart name="it-access-downloads-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<query src="it-access-downloads-series-day"/>
+	</chart>
+	<chart name="it-access-downloads-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<query src="it-access-downloads-series-hour"/>
+	</chart>	
+	<chart name="it-access-downloads-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value::real) as downloads from stats.v_download
+					 	 where handle='object-id'
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value::real) as downloads from stats.v_download
+						 where handle='object-id'
+						 and substr(date::character varying,1,4)='pyear'
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value::real) as downloads 
+						 from stats.v_download
+						 where handle='object-id' 
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value::real) as downloads 
+						 from stats.v_download
+						 where handle='object-id' 
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-views-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#0046C8"/>
+		<query src="it-access-views-series-year"/>
+	</chart>
+	<chart name="it-access-views-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#0046C8"/>
+		<query src="it-access-views-series-month"/>
+	</chart>
+	<chart name="it-access-views-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#0046C8"/>
+		<query src="it-access-views-series-day"/>
+	</chart>
+	<chart name="it-access-views-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#0046C8"/>
+		<query src="it-access-views-series-hour"/>
+	</chart>
+	<chart name="it-access-views-series-country-year" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view
+					 	 where handle='object-id'
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-all-series-year" type="bar">
+		<size width="250" height="250"/>
+		<orientation>vertical</orientation>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="it-access-all-series-year"/>
+	</chart>
+	<chart name="it-access-all-series-month" type="time">
+		<size width="500" height="280"/>
+		<tick unit="month" count="1" format="MMM"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="it-access-all-series-month"/>
+	</chart>
+	<chart name="it-access-all-series-day" type="time">
+		<size width="500" height="250"/>
+		<tick unit="day" count="1" format="E, dd"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="it-access-all-series-day"/>
+	</chart>
+	<chart name="it-access-all-series-hour" type="time">
+		<size width="500" height="250"/>
+		<tick unit="hour" count="1" format="HH:mm"/>		
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query src="it-access-all-series-hour"/>
+	</chart>		
+	<chart name="it-access-views-series-country-month" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views from stats.v_view
+						 where handle='object-id'
+						 and substr(date::character varying,1,4)='pyear'
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-views-series-country-day" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view
+						 where handle='object-id' 
+						 and date 
+						 	between to_date('01-pmonth-pyear','DD-MM-YYYY') 
+							and (to_date('01-pmonth-pyear','dd-mm-yyyy') + interval '1 month')::date - 1 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-views-series-country-hour" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view
+						 where handle='object-id' 
+						 and date = to_date('end','DD-MM-YYYY') 
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.month, d.downloads
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(relative_value) as downloads
+				  from stats.download_item_month, handle
+				  where item_id = resource_id and resource_type_id=2 and handle='object-id'
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			order by d.month		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<query>
+			select d.date, d.downloads
+			from (select date, sum(relative_value::real) as downloads
+				  from stats.v_download
+				  where handle='object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			order by d.date		
+		</query>
+	</chart>		
+	<chart name="it-access-downloads-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,sum(relative_value::real) as downloads 
+						 from stats.v_download
+						 where handle='object-id'
+						 and date 
+						 	between to_date('01-mesinicio-anoinicio','DD-MM-YYYY') 
+							and (to_date('01-mesfim-anofim','dd-mm-yyyy') + interval '1 month')::date - 1
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+                 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-downloads-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#971318"/>
+		<query>
+				select  sc.name, 
+						d.downloads 
+				from	(select country_code,(sum(relative_value::real)) as downloads 
+						 from stats.v_download
+						 where handle='object-id'
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.downloads desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-views-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select d.month, d.views
+			from (select to_date(yearmonth::varchar,'yyyymm') as month, sum(value) as views
+				  from stats.view_item_month, handle
+				  where item_id = resource_id and resource_type_id=2 and handle.handle='object-id'
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			order by d.month		
+		</query>
+	</chart>
+	<chart name="it-access-views-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#0046C8"/>
+		<query>
+			select d.date, d.views
+			from (select date, count(*) as views
+				  from stats.v_view
+				  where handle='object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			order by d.date		
+		</query>
+	</chart>		
+	<chart name="it-access-views-summary-country-yearmonth" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views
+				from	(select country_code,count(*) as views 
+						 from stats.v_view
+						 where handle='object-id'
+						 and date 
+						 	between to_date('01-mesinicio-anoinicio','DD-MM-YYYY') 
+							and (to_date('01-mesfim-anofim','dd-mm-yyyy') + interval '1 month')::date - 1
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+                 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-views-summary-country-date" type="bar">
+		<size width="300" height="400"/>
+		<orientation>vertical</orientation>		
+		<series index="0" color="#0046C8"/>
+		<query>
+				select  sc.name, 
+						d.views 
+				from	(select country_code,count(*) as views 
+						 from stats.v_view
+						 where handle='object-id'
+						 and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+                     	 group by country_code) as d,
+						 stats.country sc
+                 where d.country_code = sc.code
+                 order by d.views desc
+				 limit 10;		
+		</query>
+	</chart>
+	<chart name="it-access-all-summary-yearmonth" type="time">
+		<size width="650" height="250"/>
+		<tick unit="month" count="1" format="MMM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.mes, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select to_date(yearmonth::varchar,'yyyymm') as mes, sum(relative_value) as downloads, 0 as views
+				  from stats.download_item_month, handle
+				  where item_id = resource_id and resource_type_id=2 and handle.handle='object-id'
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth
+				  union all
+				  select to_date(yearmonth::varchar,'yyyymm') as mes, 0 as downloads, sum(value) as views
+				  from stats.view_item_month, handle
+				  where item_id = resource_id and resource_type_id=2 and handle.handle='object-id'
+				  and yearmonth between ('anoinicio' || 'mesinicio')::integer and ('anofim' || 'mesfim')::integer
+				  group by yearmonth) as d
+			group by d.mes
+			order by d.mes		
+		</query>
+	</chart>
+	<chart name="it-access-all-summary-date" type="time">
+		<size width="650" height="250"/>
+		<tick unit="day" count="2" format="dd-MM-yyyy"/>
+		<series index="0" color="#971318"/>
+		<series index="1" color="#0046C8"/>
+		<query>
+			select d.date, sum(d.downloads) as downloads, sum(d.views) as views
+			from (select date, sum(relative_value) as downloads, 0 as views
+				  from stats.v_download
+				  where handle='object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date
+				  union all
+				  select date, 0 as downloads, count(*) as views
+				  from stats.v_view
+				  where handle='object-id'
+				  and date between to_date('start','DD-MM-YYYY') and to_date('end','DD-MM-YYYY')
+				  group by date) as d
+			group by d.date
+			order by d.date		
+		</query>
+	</chart>
+
+	<!-- ********** CONTENT TYPE ********** -->
+	<!-- ********** ADM TYPE ********** -->
+
+</charts>

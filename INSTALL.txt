@@ -1,0 +1,81 @@
+Jorum-DSpace Installation 
+=========================
+
+# Author GWaller
+# Last Updated: 30th May 2011
+
+Supported OS
+============
+
+Installation has been tested on Mac OSX 10.6.7, Solaris 10, Ubuntu 11.04
+
+Prerequisite Software
+=====================
+
+- Java 5/6
+- Maven 2
+- PostgreSQL
+- XXDiff
+- Imagemagick
+- Curl
+- ClamAV
+
+Ubuntu Prerequisite Software Installation Commands
+==================================================
+
+sudo apt-get install postgresql
+sudo apt-get install sun-java6-jdk
+sudo apt-get install ant maven2
+sudo apt-get install xxdiff
+sudo apt-get install imagemagick
+sudo apt-get install curl
+sudo apt-get install clamav
+
+Configuration File
+==================
+
+Before building it is important to create a configuration properties file which stores settings
+such as the Jetty port, DSpace database connection info, DSpace email addresses etc. An example
+file, which is suitable for Ubuntu can be found at etc/ubuntu_build.properties.
+
+Please adjust this file as appropriate and if it is renamed, replace all 'etc/ubuntu_build.properties'
+references in the commands below to the path of the new file.
+
+
+Installation Commands (All Operating Systems)
+=============================================
+
+# NOTE all commands should be executed from the directory in which this INSTALL.txt files resides
+
+# Create a directory for the installation
+sudo mkdir /opt/jorum_dspace
+
+# Change ownership of the directory to be the current user
+sudo chown $USER /opt/jorum_dspace
+
+# Create a PostgreSQL database called 'jorum_dspace' owned by the user 'jorum_dspace'
+sudo su - postgres
+createuser -d -P jorum_dspace
+createdb -O jorum_dspace -E UNICODE jorum_dspace
+exit
+
+# Build the Jorum DSpace code and install it into the installation directory created above (also pre-populate the database)
+ant -DPROPS=etc/ubuntu_build.properties -DT=fresh_install dspace_ant
+
+# Run the Jorum post deploy commands (this will curently install the SRW webservice)
+ant -DPROPS=etc/ubuntu_build.properties postDeploy
+
+# Create a DSpace administrator account
+/opt/jorum_dspace/bin/create-administrator
+
+# Create the Jorum Community/Collection structure (NOTE: replace <admin email> with the real email address of the DSpace admin created above)
+/opt/jorum_dspace/bin/structure-builder -f etc/jorum_FE_HE_JACS_LDCS_collection_community_structure.xml -e <admin email> -o /tmp/struct.out
+
+# Create the Statistics database schema to store stats on item views etc
+sudo -u postgres psql -d jorum_dspace -f patched_src/dspace-stats/etc/database-schema.sql
+
+# Start up the Jetty webserver so that the installation can be viewed in a web browser
+ant -DPROPS=etc/ubuntu_build.properties jetty
+
+
+

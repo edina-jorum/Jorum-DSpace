@@ -1,0 +1,229 @@
+<import_structure>
+                <community>
+                	<name>FE</name>
+                    <description>FE classification based on LearnDirect classification</description>
+                        
+ <!--  FECOLLECTIONS -->
+
+<collection>
+       <name>FE - Agriculture Horticulture &amp; Animal Care</name>
+       <description>FE - Agriculture Horticulture &amp; Animal Care</description>
+</collection>
+
+<collection>
+       <name>FE - Area Studies / Cultural Studies / Languages / Literature</name>
+       <description>FE - Area Studies / Cultural Studies / Languages / Literature</description>
+</collection>
+
+<collection>
+       <name>FE - Arts &amp; Crafts</name>
+       <description>FE - Arts &amp; Crafts</description>
+</collection>
+
+<collection>
+       <name>FE - Business / Management / Office Studies</name>
+       <description>FE - Business / Management / Office Studies</description>
+</collection>
+
+<collection>
+       <name>FE - Catering / Food / Leisure Services / Tourism</name>
+       <description>FE - Catering / Food / Leisure Services / Tourism</description>
+</collection>
+
+<collection>
+       <name>FE - Communication / Media / Publishing</name>
+       <description>FE - Communication / Media / Publishing</description>
+</collection>
+
+<collection>
+       <name>FE - Construction &amp; Property (Built Environment)</name>
+       <description>FE - Construction &amp; Property (Built Environment)</description>
+</collection>
+
+<collection>
+       <name>FE - Education / Training / Teaching</name>
+       <description>FE - Education / Training / Teaching</description>
+</collection>
+
+<collection>
+       <name>FE - Engineering</name>
+       <description>FE - Engineering</description>
+</collection>
+
+<collection>
+       <name>FE - Environment Protection / Energy / Cleansing / Security</name>
+       <description>FE - Environment Protection / Energy / Cleansing / Security</description>
+</collection>
+
+<collection>
+       <name>FE - Family Care / Personal Development / Personal Care &amp; Appearance</name>
+       <description>FE - Family Care / Personal Development / Personal Care &amp; Appearance</description>
+</collection>
+
+<collection>
+       <name>FE - Health Care / Medicine / Health &amp; Safety</name>
+       <description>FE - Health Care / Medicine / Health &amp; Safety</description>
+</collection>
+
+<collection>
+       <name>FE - Humanities (History / Archaeology / Religious Studies / Philosophy)</name>
+       <description>FE - Humanities (History / Archaeology / Religious Studies / Philosophy)</description>
+</collection>
+
+<collection>
+       <name>FE - Information Technology &amp; Information</name>
+       <description>FE - Information Technology &amp; Information</description>
+</collection>
+
+<collection>
+       <name>FE - Logistics / Distribution / Transport / Driving</name>
+       <description>FE - Logistics / Distribution / Transport / Driving</description>
+</collection>
+
+<collection>
+       <name>FE - Manufacturing / Production Work</name>
+       <description>FE - Manufacturing / Production Work</description>
+</collection>
+
+<collection>
+       <name>FE - Oil / Mining / Plastics / Chemicals</name>
+       <description>FE - Oil / Mining / Plastics / Chemicals</description>
+</collection>
+
+<collection>
+       <name>FE - Performing Arts</name>
+       <description>FE - Performing Arts</description>
+</collection>
+
+<collection>
+       <name>FE - Politics / Economics / Law / Social Sciences</name>
+       <description>FE - Politics / Economics / Law / Social Sciences</description>
+</collection>
+
+<collection>
+       <name>FE - Sales Marketing &amp; Retailing</name>
+       <description>FE - Sales Marketing &amp; Retailing</description>
+</collection>
+
+<collection>
+       <name>FE - Sciences &amp; Mathematics</name>
+       <description>FE - Sciences &amp; Mathematics</description>
+</collection>
+
+<collection>
+       <name>FE - Services to Industry &amp; Commerce</name>
+       <description>FE - Services to Industry &amp; Commerce</description>
+</collection>
+
+<collection>
+       <name>FE - Sports Games &amp; Recreation</name>
+       <description>FE - Sports Games &amp; Recreation</description>
+</collection>
+                        
+                </community>
+                
+                <community>
+                        <name>HE</name>
+                        <description>HE classification based on JACS</description>
+                
+<!-- HECOLLECTIONS -->       
+
+<collection>
+       <name>HE - Architecture, Building and Planning</name>
+       <description>HE - Architecture, Building and Planning</description>
+</collection>
+
+<collection>
+       <name>HE - Biological Sciences</name>
+       <description>HE - Biological Sciences</description>
+</collection>
+
+<collection>
+       <name>HE - Business and Administrative studies</name>
+       <description>HE - Business and Administrative studies</description>
+</collection>
+
+<collection>
+       <name>HE - Creative Arts and Design</name>
+       <description>HE - Creative Arts and Design</description>
+</collection>
+
+<collection>
+       <name>HE - Eastern, Asiatic, African, American and Australasian Languages, Literature and related subjects</name>
+       <description>HE - Eastern, Asiatic, African, American and Australasian Languages, Literature and related subjects</description>
+</collection>
+
+<collection>
+       <name>HE - Education</name>
+       <description>HE - Education</description>
+</collection>
+
+<collection>
+       <name>HE - Engineering</name>
+       <description>HE - Engineering</description>
+</collection>
+
+<collection>
+       <name>HE - European Languages, Literature and related subjects</name>
+       <description>HE - European Languages, Literature and related subjects</description>
+</collection>
+
+<collection>
+       <name>HE - Historical and Philosophical studies</name>
+       <description>HE - Historical and Philosophical studies</description>
+</collection>
+
+<collection>
+       <name>HE - Law</name>
+       <description>HE - Law</description>
+</collection>
+
+<collection>
+       <name>HE - Linguistics, Classics and related subjects</name>
+       <description>HE - Linguistics, Classics and related subjects</description>
+</collection>
+
+<collection>
+       <name>HE - Mass Communications and Documentation</name>
+       <description>HE - Mass Communications and Documentation</description>
+</collection>
+
+<collection>
+       <name>HE - Mathematical and Computer Sciences</name>
+       <description>HE - Mathematical and Computer Sciences</description>
+</collection>
+
+<collection>
+       <name>HE - Medicine and Dentistry</name>
+       <description>HE - Medicine and Dentistry</description>
+</collection>
+
+<collection>
+       <name>HE - Physical Sciences</name>
+       <description>HE - Physical Sciences</description>
+</collection>
+
+<collection>
+       <name>HE - Social studies</name>
+       <description>HE - Social studies</description>
+</collection>
+
+<collection>
+       <name>HE - Subjects allied to Medicine</name>
+       <description>HE - Subjects allied to Medicine</description>
+</collection>
+
+<collection>
+       <name>HE - Technologies</name>
+       <description>HE - Technologies</description>
+</collection>
+
+<collection>
+       <name>HE - Veterinary Sciences, Agriculture and related subjects</name>
+       <description>HE - Veterinary Sciences, Agriculture and related subjects</description>
+</collection>
+                
+                
+                </community>
+</import_structure>                
+                

@@ -1,0 +1,1 @@
+../scripts/run_selenium_tests_solaris.sh

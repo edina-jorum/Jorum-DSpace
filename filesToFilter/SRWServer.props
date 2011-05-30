@@ -1,0 +1,56 @@
+# parameters for the SRW Servlet
+SRW.Context=srw
+default.database=Jorum
+resultSetIdleTime=300
+makeIndex.html=true
+index.html=${dspace.dir}/SRW/index.html
+
+#sru extension mappings of the form:
+#extension.<sru-parm>=<srw-element>
+#extension.<srw-element>.namespace=<srw-element-namespace>
+extension.x-info-14-restrictorSummary=restrictorSummary
+extension.restrictorSummary.namespace=info:srw/extension/14/restrictorSummary
+extension.x-oaiheaderinfo=OaiHeader
+extension.OaiHeader.namespace=info:srw/extension/5/oaiheaderinfo
+extension.x-info-14-returnTargetURL=returnTargetURL
+extension.returnTargetURL.namespace=info:srw/extension/14/returnTargetURL
+
+#remote srwservlets whose databases we should add to index.html
+#remote.alcme.configuration=http://alcme.oclc.org/srw/SRWServer.props
+#remote.alcme.path=http://alcme.oclc.org/srw/search
+
+# Parameters for the different databases
+#
+# Every database must have a class specification.
+# The home specification is theoretically optional (the server doesn't need it),
+# but the databases often require it.  It is mandatory for DSpace and must point
+# at the DSpace directory that contains the config directory.  The database code
+# uses the DSpace configuration information to access the DSpace repository.
+#
+# The database configuration files can go anywhere.  The server assumes that
+# they have a complete path specification.  If it can't find the database under
+# that assumption, then it looks again in the database home directory.  Failing
+# that, it tries one more time, looking in the SRW home directory.
+#
+# The database configuration files contain index and record schema mappings.
+# For DSpace, the index mappings are from SRW index names to DSpace/Lucene index
+# names.  For Pears/Newton databases, the mappings are from SRW index names to
+# Z39.50 attributes; from there your database.ini file contains the mappings
+# from the attributes to your database indexes.
+#
+# The native record schema for DSpace is DC and any schema mappings are from DC
+# to the requested schema.  For Pears/Newton databases, the tagged BER records
+# are turned into trivial XML and the XSL stylesheet maps from that XML to the
+# desired schema.
+#
+# The test database accepts any legal search and always returns the same record.
+# It provides a simple test framework to determine if the server is correctly
+# installed.
+# 
+
+# parameters for the test database
+#db.test.class=ORG.oclc.os.SRW.SRWTestDatabase
+
+db.Jorum.class=ORG.oclc.os.SRW.DSpaceLucene.SRWLuceneDatabase
+db.Jorum.home=${dspace.dir}/
+db.Jorum.configuration=SRW/DSpace.SRWDatabase.props

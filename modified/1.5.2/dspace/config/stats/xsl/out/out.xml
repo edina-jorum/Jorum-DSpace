@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table cellspacing="0" cellpadding="0" width="100%" border="0">
+<tr>
+<td/>
+</tr>
+<tr>
+<td>
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td valign="top">
+<div class="BlockTitle">Pesquisas</div>
+<table class="statTable">
+<tr>
+<th align="left" class="statTableHeader">Ano</th>
+<th align="left" class="statTableHeader">Pesquisas</th>
+</tr>
+<tr>
+<td align="left" class="statOddRowOddCol">2006</td>
+<td align="right" class="statOddRowEvenCol">539</td>
+</tr>
+<tr>
+<td align="left" class="statEvenRowOddCol">2007</td>
+<td align="right" class="statEvenRowEvenCol">694</td>
+</tr>
+<tr>
+<td align="left" class="statOddRowOddCol">
+<b/>
+</td>
+<td align="right" class="statOddRowEvenCol">
+<b>1.233</b>
+</td>
+</tr>
+</table>
+<br/>
+</td>
+<td width="50"/>
+<td valign="top">
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td align="center">
+<div class="BlockTitle">Pesquisas por ano</div>
+</td>
+</tr>
+<tr>
+<td>
+<img border="0" src="DisplayChart?filename=jfreechart-64831.png"/>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td valign="top"/>
+<td width="50"/>
+<td valign="top"/>
+</tr>
+</table>
+</td>
+</tr>
+</table>

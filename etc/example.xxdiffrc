@@ -1,0 +1,4 @@
+Show.PaneMergedView: True
+ExitOnSame: True
+ExitIfNoConflicts: True
+ExitWithMergeStatus: True
