@@ -2,7 +2,7 @@ Jorum-DSpace README
 =========================
 
 # Author GWaller
-# Last Updated: 30th May 2011
+# Last Updated: 25th July 2011
 
 About
 =====
@@ -116,5 +116,17 @@ e.g. to view the HTML report, open the file:
 
 ./build/cobertura/report/html/index.html
 
+
+Content Package Support
+=======================
+
+A major Jorum modification was the support for learning content package standards, namely IMS and SCORM.
+For more information on what package types are supported, please see PACKAGER_NOTES.txt.
+
+Version
+=======
+
+The code supplied is the Jorum v2.1.0 release, which was launched on 19th May 2011 and hosted at 
+the University of Edinburgh (EDINA). 
 
 

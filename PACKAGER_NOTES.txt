@@ -1,0 +1,88 @@
+Jorum-DSpace Packager Notes 
+===========================
+
+# Author GWaller
+# Last Updated: 25th July 2011
+
+One of the major modification made to DSpace was the support for common learning content
+package standards e.g. IMS and SCORM. 
+
+If a user submits a recognised content package, DSpace will automatically read the metadata
+from the package manifest file and pre-populate this in the web interface during a submission.
+
+For DSpace to recognise a submission as a content package, the submission must meet the criteria 
+included below:
+
+1. The submission is a Zip archive
+
+2. The submission contains a file titled "imsmanifest.xml" in the root of the Zip archive
+
+3. The "imsmanifest.xml" file must be a valid and well formed XML document
+
+4. The manifest uses supported namespaces (see later)
+
+5. Only one metadata standard will be supported in the manifest i.e. either IMSMD, LOM or DC - not a combination.
+
+Licence Information
+===================
+
+Licence information can be read from the package manifest if it is expressed in the appropriate metadata 
+element. The code will use the following XPath expressions to isolate the licence information:
+
+IMSMD: //rights/description/langstring
+LOM: //rights/description/string
+DC: //rights
+QDC: //rights[@xsi:type="dcterms:URI"]
+
+NOTE: If an unsupported or no licence is found, the depositor will be prompted to select a new licence
+for the item as part of the submission process.
+
+Supported Content Package Namespaces
+====================================
+
+The following namespaces are supported in content package manifest files:
+
+IMS: http://www.imsglobal.org/xsd/imscp_v1p1
+SCORM: http://www.adlnet.org/xsd/adlcp_rootv1p2
+SCORM: http://www.adlnet.org/xsd/adlcp_v1p3
+
+Supported Metadata Namespaces
+====================================
+
+The following namespaces are supported for metadata in content package manifest files:
+
+IMSMD: http://www.imsglobal.org/xsd/imsmd_v1p2
+LOM: http://ltsc.ieee.org/xsd/LOM
+DC: http://purl.org/dc/elements/1.1/
+QDC: http://purl.org/dc/terms/
+
+Package Previews
+================
+
+When a user submits a recognised and supported content package, a package preview will also be
+created. This package preview is stored as an HTML file within a "PREVIEW_CP" bundle. This single
+HTML file provides a series of HTML links for the package organisation and a main area for viewing 
+package content.
+
+As the preview is actually a HTML file which shows both the DSpace header and footer, branding etc,
+all the package previews should be re-generated if any modifications are made to the visual appearance
+of DSpace e.g. the theme, headers, footers etc.
+
+Inorder to regenerate all the package previews, the following command must be executed on the 
+DSpace server:
+
+<dspace installation dir>/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews <admin email>
+
+e.g.
+
+/opt/jorum_dspace/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews root@localhost 
+
+*NOTE*
+If you have a lot of items in DSpace, you may need to allocate a large heap size to the above command.
+The code is single threaded and can take some time to complete (and use a lot of memory). 
+Previews will only be altered if the command successfully completes.
+
+e.g. to allocate a 2 Gb heap use: 
+
+JAVA_OPTS=-Xmx2048 /opt/jorum_dspace/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews root@localhost 
+
