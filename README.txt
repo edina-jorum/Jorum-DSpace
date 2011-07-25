@@ -129,4 +129,17 @@ Version
 The code supplied is the Jorum v2.1.0 release, which was launched on 19th May 2011 and hosted at 
 the University of Edinburgh (EDINA). 
 
+Known Issues
+============
+
+DS-253 (aka White Screen of Death): https://jira.duraspace.org/browse/DS-253
+This is due to a bug in Cocoon and results in a white screen being show to the user when they access
+DSpace. This has been observed whilst running under Tomcat. The only solution is to restart Tomcat
+unfortunately.
+A number of load tests have been executed against the code running under Jetty without seeing
+the issue - this however does not say that Tomcat is the culprit, meerly that it wasn't observed
+whilst using Jetty.
+
+
+
 
