@@ -84,5 +84,5 @@ Previews will only be altered if the command successfully completes.
 
 e.g. to allocate a 2 Gb heap use: 
 
-JAVA_OPTS=-Xmx2048 /opt/jorum_dspace/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews root@localhost 
+JAVA_OPTS=-Xmx2048m /opt/jorum_dspace/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews root@localhost 
 
