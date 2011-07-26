@@ -68,7 +68,7 @@ As the preview is actually a HTML file which shows both the DSpace header and fo
 all the package previews should be re-generated if any modifications are made to the visual appearance
 of DSpace e.g. the theme, headers, footers etc.
 
-Inorder to regenerate all the package previews, the following command must be executed on the 
+In order to regenerate all the package previews, the following command must be executed on the 
 DSpace server:
 
 <dspace installation dir>/bin/dsrun uk.ac.jorum.dspace.utils.GeneratePreviews <admin email>

@@ -87,7 +87,7 @@ http://<jetty host>:<jetty port>/sword
 e.g. 
 http://localhost:8080/sword
 
-To service document will be located at http://<jetty host>:<jetty port>/sword/servicedocument
+The service document will be located at http://<jetty host>:<jetty port>/sword/servicedocument
 
 e.g. to obtain the service document using Curl and using the DSpace account "root@localhost" with password "dspace":
 
@@ -137,7 +137,7 @@ This is due to a bug in Cocoon and results in a white screen being show to the u
 DSpace. This has been observed whilst running under Tomcat. The only solution is to restart Tomcat
 unfortunately.
 A number of load tests have been executed against the code running under Jetty without seeing
-the issue - this however does not say that Tomcat is the culprit, meerly that it wasn't observed
+the issue - this however does not say that Tomcat is the culprit, merely that it wasn't observed
 whilst using Jetty.
 
 
